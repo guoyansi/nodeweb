@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>国际订单</title>
+    <link rel="stylesheet" type="text/css" href="/gjdd/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/gjdd/css/inteOrder1.css" />
+    <link rel="stylesheet" type="text/css" href="/gjdd/ui/rl/dist/flatpickr.min.css">
+    <script type="text/javascript" src="/gjdd/js/jquery-2.1.4.min.js" ></script>
+    <script type="text/javascript" src="/gjdd/js/echarts-all.js"></script>
+    <script src="/gjdd/ui/rl/dist/flatpickr.js"></script>
+</head>
+
+<body>
+<div class="io-box">
+    <div class="base-mc io-mainW io-top">
+        <div class="io-top-left"></div>
+        <div class="io-top-right">
+            <span id="myDateTime" class="io-top-time">0000-00-00 00:00:00</span>
+            <span class="io-top-time-icon">
+                <!--<input id="calendar" class="io-top-calendar"   data-min-date="{{data.param.minDate}}" data-max-date='{{data.param.maxDate}}' />-->
+                <input id="calendar" class="io-top-calendar" />
+            </span>
+        </div>
+    </div>
+    <div class="base-mc io-mainW io-main">
+        <div class="io-main-left">
+            <div class="io-main-box-item io-main-left-1">
+                <table class="io-main-left-table">
+                    <tr>
+                        <th colspan="2">口岸订单量</th><th colspan="2">平台订单量</th>
+                    </tr>
+                    <tr>
+                        <td class="base-tc">
+                            <span class="io-main-left-1-title">广州口岸：</span>
+                        </td>
+                        <td class="base-tl">
+                            <span id="guozhouPort" class="base-eli io-main-left-1-value-1">-</span>件
+                        </td>
+                        <td class="base-tc">ebay：</td>
+                        <td class="base-tl">
+                            <span id="ebayPlat" class="base-eli io-main-left-1-value-2">-</span>件
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="base-tc">
+                            <span class="io-main-left-1-title">深圳口岸：</span>
+                        </td>
+                        <td class="base-tl">
+                            <span id="shenzhenPort" class="base-eli io-main-left-1-value-1">-</span>件<!--<span class="io-main-left-border-right"></span>--></td>
+                        <td class="base-tc">vish：</td>
+                        <td class="base-tl">
+                            <span id="vishPlat" class="base-eli io-main-left-1-value-2">-</span>件
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="base-tc">
+                            <span class="io-main-left-1-title">上海口岸：</span>
+                        </td>
+                        <td class="base-tl">
+                            <span id="shanghaiPort" class="base-eli io-main-left-1-value-1">-</span>件<!--<span class="io-main-left-border-right"></span>--></td>
+                        <td class="base-tc">菜鸟：</td>
+                        <td class="base-tl">
+                            <span id="caiNiaoPlat" class="base-eli io-main-left-1-value-2">-</span>件
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="base-tc">
+                            <span class="io-main-left-1-title">北京口岸：</span>
+                        </td>
+                        <td class="base-tl">
+                            <span id="beijingPort" class="base-eli io-main-left-1-value-1">-</span>件<!--<span class="io-main-left-border-right"></span>--></td>
+                        <td class="base-tc">shipping：</td>
+                        <td class="base-tl">
+                            <span id="shippingPlat" class="base-eli io-main-left-1-value-2">-</span>件
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="io-main-box-item io-main-left-2">
+                <div class="io-main-left-2-title">48小时未收寄订单时限分布</div>
+                <div id="sxfb-highcharts" class="io-main-left-sxfb-box">
+
+                </div>
+            </div>
+        </div>
+        <div class="io-main-box-item io-main-middle">
+            <div class="io-main-middle-title">今日订单量：</div>
+            <table class="io-main-middle-number-box">
+                <tbody>
+                <tr>
+                    <td class="io-main-middle-number-item-box padd">
+                        <span class="js-fp io-main-middle-number-item">-</span>
+                    </td>
+                    <td class="io-main-middle-number-item-box padd">
+                        <span class="js-fp io-main-middle-number-item">-</span>
+                    </td>
+                    <td class="io-main-middle-number-item-box padd">
+                        <span class="js-fp io-main-middle-number-item">-</span>
+                    </td>
+                    <td class="io-main-middle-number-item-box io-main-middle-number-point-box">
+                        <span class="io-main-middle-number-point"></span>
+                    </td>
+                    <td class="io-main-middle-number-item-box padd">
+                        <span class="js-fp io-main-middle-number-item">-</span>
+                    </td>
+                    <td class="io-main-middle-number-item-box padd">
+                        <span class="js-fp io-main-middle-number-item">-</span>
+                    </td>
+                    <td class="io-main-middle-number-item-box padd">
+                        <span class="js-fp io-main-middle-number-item">-</span>
+                    </td>
+                    <td class="io-main-middle-number-item-box io-main-middle-number-point-box">
+                        <span class="io-main-middle-number-point"></span>
+                    </td>
+                    <td class="io-main-middle-number-item-box padd">
+                        <span class="js-fp io-main-middle-number-item">-</span>
+                    </td>
+                    <td class="io-main-middle-number-item-box padd">
+                        <span class="js-fp io-main-middle-number-item">-</span>
+                    </td>
+                    <td class="io-main-middle-number-item-box padd">
+                        <span class="js-fp io-main-middle-number-item">-</span>
+                    </td>
+                    <td class="io-main-middle-number-item-box io-main-middle-number-jian-box">
+                        <div class="io-main-middle-number-jian">件</div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="io-main-middle-package-box">
+                <div class="io-main-middle-package-item io-main-middle-package-item-1">
+                    E邮宝：<span id="eyb" class="io-main-middle-package-number">-</span>件
+                </div>
+                <div class="io-main-middle-package-item io-main-middle-package-item-2">
+                    EMS：<span id="ems" class="io-main-middle-package-number">-</span>件
+                </div>
+                <div class="io-main-middle-package-item io-main-middle-package-item-3">
+                    国际小包：<span id="small" class="io-main-middle-package-number">-</span>件
+                </div>
+            </div>
+            <div id="map" class="io-main-middle-map">
+                <!--<img src="img/china-map.png" height="330" />-->
+            </div>
+        </div>
+        <div id="js-top-box" class="io-main-box-item io-main-right">
+            <!--<div class="io-main-right-2">-->
+            <div class="io-main-left-2-title io-main-right-2-title">Top客户订单量</div>
+            <div class="io-main-right-2-group">
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-1">排名</div>
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-2">客户名称</div>
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-3">邮件量</div>
+            </div>
+            <!--<div class="io-main-right-2-group">
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-1">-</div>
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-2">-</div>
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-3">-</div>
+            </div>
+
+            <div class="io-main-right-2-group">
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-1">-</div>
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-2">-</div>
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-3">-</div>
+            </div>
+
+            <div class="io-main-right-2-group">
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-1">-</div>
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-2">-</div>
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-3">-</div>
+            </div>
+
+            <div class="io-main-right-2-group">
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-1">-</div>
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-2">-</div>
+                <div class="io-main-right-2-group-item io-main-right-2-group-item-3">-</div>
+            </div>-->
+        </div>
+    </div>
+
+    <div class="base-mc io-mainW io-main-box-item io-bottom">
+        <div class="io-bottom-group">
+            <div class="io-bottom-left">
+                <div class="io-bottom-left-item io-bottom-left-item-1"></div>
+                <div class="js-f-item js-f-hour io-bottom-left-item active">分时</div>
+                <div class="js-f-item js-f-pro io-bottom-left-item">分省</div>
+                <div class="js-f-item js-f-way io-bottom-left-item">分路向</div>
+                <div class="js-f-item js-f-48 io-bottom-left-item">48小时订单收寄率</div>
+            </div>
+            <!--<div class="io-bottom-right">
+                <div class="io-bottom-right-item">
+                    <span class="io-bottom-right-item-color io-bottom-right-item-color-4"></span>
+                    国际小包
+                </div>
+                <div class="io-bottom-right-item">
+                    <span class="io-bottom-right-item-color io-bottom-right-item-color-3"></span>
+                    EMS
+                </div>
+                <div class="io-bottom-right-item">
+                    <span class="io-bottom-right-item-color io-bottom-right-item-color-2"></span>
+                    E邮宝
+                </div>
+                <div class="io-bottom-right-item">
+                    <span class="io-bottom-right-item-color io-bottom-right-item-color-1"></span>
+                    总收寄率
+                </div>
+            </div>-->
+        </div>
+        <div id="columnEcharts" class="io-bottom-pic">
+        </div>
+    </div>
+    <input id="dataInput" type="hidden" value="{{data}}" />
+    <form id="form" action="/gjdd/page" method="post">
+        <input type="hidden" name="timeType" value="" />
+        <input type="hidden" name="item" value="" />
+        <input type="hidden" name="minDate" value="" />
+        <input type="hidden" name="maxDate" value="" />
+        <input type="hidden" name="dateTime" value="" />
+    </form>
+</div>
+</body>
+<script type="text/javascript" src="/gjdd/js/inte.js"></script>
+</html>

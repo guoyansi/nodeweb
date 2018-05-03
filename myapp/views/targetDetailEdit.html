@@ -1,0 +1,86 @@
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-history">目标值管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">设置目标值</span>
+
+    </div>
+        <div class="ui-search">
+            <div class="ui-search-item">
+                <input class="ui-btn ui-btn-blue" type="button" value="保存" onclick="saveBatch()" />
+                <input class="ui-btn ui-btn-red" type="button" value="返回" onclick="goTargetPage()" />
+            </div>
+        </div>
+    </form>
+
+    <div class="ui-table-box">
+        <table class="ui-table">
+            <caption class="ui-table-caption">搜索结果</caption>
+            <thead class="ui-table-thead">
+                <tr id="theadTdHtml" class="ui-table-center">
+                </tr>
+            </thead>
+            <tbody id="tbodyHtml" class="ui-table-tbody ui-table-center">
+            </tbody>
+        </table>
+    </div>
+</div>
+<input id="data" type="hidden" value="{{data}}"/>
+<script type="text/javascript">
+    function goTargetPage() {
+        window.location.href="/targetValue/page";
+    }
+    var data=JSON.parse($("#data").val());
+    var theadHtml="";
+    var tbodyHtml="";
+    for(var i=0;i<data.colInfo.length;i++){
+        theadHtml+="<th class='ui-table-td'>"+data.colInfo[i].colName+"</th>";
+    }
+    var col="";
+    for(i=0;i<data.list.length;i++){
+        tbodyHtml+="<tr class='ui-table-tr'>";
+        for(var j=0;j<data.colParam.length;j++){
+            tbodyHtml+="<td class='ui-table-td' style='padding:12px 1px;'><input class='ui-input-text' type='text' data-key='"+data.colParam[j]+"' value='"+data.list[i][data.colParam[j]]+"' style='width: 100%;padding: 0;font-size: 12px' /> </td>";
+        }
+        tbodyHtml+="</tr>";
+    }
+    $("#theadTdHtml").html(theadHtml);
+    $("#tbodyHtml").html(tbodyHtml);
+    $("#data").remove();
+
+    function  saveBatch() {
+        var list=[];
+        $("#tbodyHtml tr").each(function () {
+            var item={};
+            $("input[type=text]",this).each(function () {
+                var obj=$(this);
+                item[obj.attr("data-key")]=obj.val();
+            });
+            list.push(item);
+        });
+        var data={};
+        data.idxTeplId=bg.url("param:idxTeplId");
+        data.year=bg.url("param:year");
+        data.dataList=list;
+        console.log(data);
+        bg.ajax({
+            url:"/targetvalue/saveTargetValue",
+            data:data,
+            success:function(data) {
+                if(data.status==1){
+                    $.ui_dg({
+                        type:"s",
+                        con:data.msg
+                    })
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    })
+                }
+            }
+        })
+    }
+
+</script>

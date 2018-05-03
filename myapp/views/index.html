@@ -1,0 +1,155 @@
+﻿<h1>{{title}}</h1>
+<p>Welcome to {{title}}</p>
+<ul>
+    {{#each list}}
+    <li>name:{{name}};age:{{age}};
+        {{#each job}}
+            <p>{{.}}---{{../name}}</p>
+        {{/each}}
+
+        <h1>big and small:</h1>
+        {{#gysIf age '>' 27}}
+        <span style="color: red;">{{age}}year,Old</span>
+        {{else}}
+        <span style="color: blue;">{{age}}year,small</span>
+        {{/gysIf}}
+    </li>
+    {{/each}}
+
+</ul>
+{{gys 1 100}}
+
+<div style="padding: 10px;background-color: red">
+    <input type="button" value="获取远程数据" onclick="getRomate()" />
+    <script>
+        function getRomate() {
+           /* var json={"username":"guoyansi","age":26};
+            $.ajax({
+                type:"post",
+                url:"http://192.168.0.101:8080/sm/node/test",
+                data:JSON.stringify(json),
+                contentType:"application/json",
+                success:function (data) {
+                    console.log(data);
+                },
+                error:function () {
+                    alert("error");
+                }
+            });*/
+
+
+
+            $.ajax({
+                type:"post",
+                url:"test/romate",
+                success:function (data) {
+                    console.log(data);
+                },
+                error:function () {
+                    alert("error");
+                }
+            });
+        }
+    </script>
+</div>
+
+<h1>Form表单</h1>
+<div style="background-color: #ccc;padding: 20px;margin: 20px">
+    <h2>Get</h2>
+    <form action="test/goTest" method="get">
+        <div><input type="text" name="username" value="" /></div>
+        <div><input type="text" name="age" value="" /></div>
+        <div><input type="submit" value="提交"></div>
+    </form>
+    <h2>Post</h2>
+    <form action="test/goTest" method="post">
+        <div><input type="text" name="username" value="" /></div>
+        <div><input type="text" name="age" value="" /></div>
+        <div><input type="submit" value="提交"></div>
+    </form>
+</div>
+<h1>AJAX</h1>
+<div style="background-color: #ccc;padding: 20px;margin: 20px">
+    <h2>Get</h2>
+        <div><input id="getUsername" type="text" name="username" value="" /></div>
+        <div><input id="getAge" type="text" name="age" value="" /></div>
+       <div><input type="button" value="ajax-get" onclick="ajaxGet()" /></div>
+        <script>
+            function ajaxGet() {
+                var data={};
+                data.username=$("#getUsername").val();
+                data.age=$("#getAge").val();
+                $.ajax({
+                    type:"get",
+                    data:data,
+                    url:"test/getAjax",
+                    success:function (data) {
+                        console.log(data);
+                        alert(data);
+                    },
+                    error:function () {
+                        alert("error")
+                    }
+                });
+            }
+
+        </script>
+    <h2>Post</h2>
+        <div><input id="postUsername" type="text"  value="" placeholder="username"/></div>
+        <div><input id="postAge" type="text"  value="" placeholder="age"/></div>
+        <div><input id="postQuery" type="text"  value="" placeholder="路劲上的参数"/></div>
+        <div><input type="button" value="ajax-post" onclick="ajaxPost()" /></div>
+    <script>
+        function ajaxPost() {
+            var data={};
+            data.username=$("#postUsername").val();
+            data.age=$("#postAge").val();
+            $.ajax({
+                type:"post",
+                data:data,
+                url:"test/postAjax?query="+$("#postQuery").val(),
+                success:function (data) {
+                    console.log(data);
+                    alert(data);
+                },
+                error:function () {
+                    alert("error")
+                }
+            });
+        }
+
+    </script>
+    <h2>All</h2>
+    <div><input id="allUsername" type="text"  value="" /></div>
+    <div><input id="allAge" type="text"  value="" /></div>
+    <div>
+        <select id="allMethod">
+            <option value="get">Get</option>
+            <option value="post">Post</option>
+        </select>
+    </div>
+    <div><input type="button" value="ajax-All" onclick="ajaxAll()" /></div>
+    <script>
+        function ajaxAll() {
+            var data={};
+            data.username=$("#allUsername").val();
+            data.age=$("#allAge").val();
+            $.ajax({
+                type:$("#allMethod").val(),
+                data:data,
+                url:"test/allHttp",
+                success:function (data) {
+                    console.log(data);
+                },
+                error:function () {
+                    alert("error")
+                }
+            });
+        }
+
+    </script>
+
+
+
+</div>
+

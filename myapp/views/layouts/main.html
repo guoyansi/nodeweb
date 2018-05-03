@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <title>{{title}}</title>
+    <link rel='stylesheet' href='/lazy/face/4/css/base.css' />
+    <link rel='stylesheet' href='/lazy/face/4/css/lazy.css' />
+    <link rel='stylesheet' href='/lazy/ui/dialog/dialog.css' />
+    <link rel='stylesheet' href='/lazy/ui/load/load.css' />
+    <link rel='stylesheet' href='/lazy/ui/pagination/pagination.css' />
+
+    <link rel="stylesheet" href="../stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/jquery-easyui-1.5.3/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="/jquery-easyui-1.5.3/themes/icon.css">
+
+    <link rel='stylesheet' href='/lazy/ui/tree/tree.css' />
+
+    <script src="/lazy/js/jquery-2.1.4.js"></script>
+    <script src="/lazy/js/bridge27.js"></script>
+    <script src="/lazy/ui/dialog/dialog.js"></script>
+    <script src="/lazy/ui/load/load.js"></script>
+    <script src="/lazy/ui/enter/enter.js"></script>
+    <script src="/lazy/ui/pagination/pagination.js"></script>
+    <script src="/javascripts/tool.js"></script>
+    <script type="text/javascript" src="/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/lazy/ui/tree/tree.js"></script>
+  </head>
+  <body>
+  <div class="ui-head">
+    <div class="base-fl">
+      <span class="ui-logo"></span>
+      <span class="ui-logo-text">权限管理系统</span>
+    </div>
+    <div class="base-fr">
+      <span class="ui-head-text ui-head-icon">{{data.user.userName}}({{data.user.orgLevelName}})</span>
+      <span class="base-cp ui-head-text ui-out-icon" onclick="goOut()">退出</span>
+    </div>
+  </div>
+  <ul class="ui-menu">
+    <li class="ui-menu-item ui-menu-item-active">
+      <div class="ui-menu-item-title ui-menu-item-title-bj">权限管理</div>
+      {{#each data.user.funList}}
+      <div class="js-jump-page ui-menu-item-text" href="{{funcUrl}}" menuName="{{funcCode}}" target="{{target}}">{{funcName}}</div>
+      {{/each}}
+    </li>
+  </ul>
+  {{{body}}}
+
+  </body>
+<script>
+  $(function () {
+      var menuName=";{{data.menuName}}";
+      if(menuName==";"){
+          menuName="jsgl";
+      }else{
+          menuName="{{data.menuName}}";
+      }
+      $("div[menuName="+menuName+"]").addClass("ui-menu-item-text-active");
+
+      $(".js-jump-page").click(function(){
+        //window.location.href=$(this).attr("href");
+          var target=$(this).attr("target");
+          if(target=="_self"){
+              bg.goPage($(this).attr("href"));
+          }else if(target=="_open"){
+              window.open($(this).attr("href"));
+          }
+      });
+  });
+
+function goOut() {
+    window.location.href="/login/out";
+}
+</script>
+</html>

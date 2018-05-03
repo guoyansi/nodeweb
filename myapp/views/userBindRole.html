@@ -1,0 +1,206 @@
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-history">角色管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">用户绑定</span>
+    </div>
+    <div class="qx-bind-desc">
+        <span class="base-pr20">当前角色：{{data.role.roleName}}</span>
+        <!--<span class="base-pr20">机构层级：{{data.role.orgLevelName}}</span>-->
+    </div>
+    <div class="ui-search">
+        <form id="form" action="/userBindRole/page" method="post">
+            <input id="currentPage" type="hidden" name="currentPage" value="{{data.form.currentPage}}" />
+            <input type="hidden" name="roleId" value="{{data.form.roleId}}" />
+           <!-- <input id="orgValue" name="orgValue" type="hidden" value="{{data.form.orgValue}}" />-->
+            <!--<input id="orgName" name="orgName" type="hidden" value="{{data.form.orgName}}" />-->
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">组织机构：</span>
+                <div class="ui-search-item-right">
+                    <!--<input id="orgLevel" type="text">-->
+                    <select class="ui-select" name="orgValue">
+                        <option value="0">全部</option>
+                        {{#each data.role.orgList}}
+                        {{#p_cod orgId '==' ../data.form.orgValue}}
+                            <option selected="selected" value="{{orgId}}">{{orgShortName}}</option>
+                        {{else}}
+                            <option value="{{orgId}}">{{orgShortName}}</option>
+                        {{/p_cod}}
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">账号：</span>
+                <div class="ui-search-item-right">
+                    <input class="ui-input-text" type="text" name="userCode" value="{{data.form.userCode}}" placeholder="账号"/>
+                </div>
+            </div>
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">用户名：</span>
+                <div class="ui-search-item-right">
+                    <input class="ui-input-text" type="text" name="userName" value="{{data.form.userName}}" placeholder="用户名"/>
+                </div>
+            </div>
+
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">用户类型：</span>
+                <div class="ui-search-item-right">
+                    <select class="ui-select" name="type">
+                        {{#p_cod data.form.type '==' 1}}
+                        <option value="1" selected>已绑定用户</option>
+                        <option value="2">未绑定用户</option>
+                            {{else}}
+                        <option value="1">已绑定用户</option>
+                        <option value="2" selected="selected">未绑定用户</option>
+                        {{/p_cod}}
+                    </select>
+                </div>
+            </div>
+
+            <div class="ui-search-item">
+                <input class="ui-btn ui-btn-blue" type="button" value="查询" onclick="search(1)"/>
+                <span><input class="ui-btn ui-btn-red" type="button" value="返回" onclick="goRolePage()" /></span>
+            </div>
+        </form>
+    </div>
+
+    <div class="ui-table-box">
+        <table class="ui-table">
+            <thead class="ui-table-thead">
+                <tr class="ui-table-center">
+                    <th class="ui-table-td">账号</th>
+                    <th class="ui-table-td">用户姓名</th>
+                    <th class="ui-table-td">机构层级</th>
+                    {{#each data.extConfigList}}
+                    <th class="ui-table-td">{{userExtName}}</th>
+                    {{/each}}
+                    <th class="ui-table-td">手机号</th>
+                    <th class="ui-table-td">邮箱</th>
+                    <th class="ui-table-td">管理</th>
+                </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+            {{#p_cod data.list.length '=='0}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td" colspan="7">暂无数据</td>
+            </tr>
+            {{else}}
+            {{#each data.list}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td">{{userCode}}</td>
+                <td class="ui-table-td">{{userName}}</td>
+                <td class="ui-table-td">{{orgLevelName}}</td>
+                {{#each ../data.extConfigList}}
+                    {{#each ../extList}}
+                        {{#p_cod ../../userId '==' userId '&&' ../sid '==' userExtId}}
+                        <td class="ui-table-td">{{../extFinalValue}}</td>
+                        {{/p_cod}}
+                    {{/each}}
+                {{/each}}
+                <td class="ui-table-td">{{phone}}</td>
+                <td class="ui-table-td">{{email}}</td>
+                <td class="ui-table-td">
+                    {{#p_cod ../data.form.type '==' 1}}
+                    <input class="ui-btn ui-btn-red" type="button" value="解绑"  onclick="noBindUser('{{rsId}}')" />
+                    {{else}}
+                    <input class="ui-btn ui-btn-green" type="button" value="绑定" onclick="bindUser('{{userId}}','{{../../data.form.roleId}}')"  />
+                    {{/p_cod}}
+                </td>
+            </tr>
+            {{/each}}
+            {{/p_cod}}
+            </tbody>
+        </table>
+        <div id="pagination" page="{{data.form.currentPage}}" count="{{data.form.count}}"></div>
+    </div>
+</div>
+<script>
+    function search(page) {
+        $("#currentPage").val(page);
+        //$("#form").submit();
+        bg.submit("#form");
+    }
+    function goRolePage() {
+        //window.location.href="/role/page";
+        bg.goPage("/role/page");
+    }
+    $("#pagination").ui_pn({
+        clickEvent: function (page) {
+            search(page);
+        }
+    });
+
+    /*var orgName=$("#orgName").val();
+    $("#orgLevel").combotree({
+        url: "/customer/getOrgList",
+        method:"get",
+        //label:"Select Node:",
+        labelPosition:'top',
+        value:orgName,
+        loadFilter:function(data){
+            //orgTreeData=bg.listToTree("sid","parentOrgCode",data.list);
+            data=bg.listToTree("sid","parentOrgCode",data.list);
+            data.unshift({"sid":null,"parentOrgCode":null,text:"全部"});
+            return data;
+        },
+        onClick:function(node){
+            $("#orgLevel").combotree('setValue', node.text);
+            $("#orgValue").val(node.sid);
+            $("#orgName").val(node.text);
+        }
+    });*/
+function bindUser(userId,roleId){
+    bg.ajax({
+        url:"/userBindRole/roleBindUser",
+        data:{userId:userId,roleId:roleId},
+        success:function (data) {
+            if(data.status==1){
+                $.ui_dg({
+                    type:"s",
+                    con:data.msg,
+                    btn:[
+                        {name:"确定",action:function () {
+                            $.ui_dgc();
+                            //$("#form").submit();
+                            bg.submit("#form");
+                        }}
+                    ]
+                });
+            }else{
+                $.ui_dg({
+                    con:data.msg
+                });
+            }
+        }
+    });
+}
+function noBindUser(rsId) {
+    bg.ajax({
+        url:"/userBindRole/noBindUser",
+        data:{sid:rsId},
+        success:function (data) {
+            if(data.status==1){
+                $.ui_dg({
+                    type:"s",
+                    con:data.msg,
+                    btn:[
+                        {name:"确定",action:function () {
+                            $.ui_dgc();
+                            //$("#form").submit();
+                            bg.submit("#form");
+                        }}
+                    ]
+                });
+            }else{
+                $.ui_dg({
+                    con:data.msg
+                });
+            }
+        }
+    });
+}
+</script>

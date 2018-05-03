@@ -1,0 +1,584 @@
+<div class="ui-page" xmlns:bg="http://www.w3.org/1999/html">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">用户账号管理</span>
+    </div>
+    <form id="form" action="/customer/page" method="post">
+        <input id="currentPage" name="currentPage" type="hidden" value="{{data.form.currentPage}}" />
+        <input id="orgValue" name="orgValue" type="hidden" value="{{data.form.orgValue}}" />
+        <div class="ui-search">
+           <div class="ui-search-item">
+               <span class="ui-search-item-left">组织机构：</span>
+                <div class="ui-search-item-right">
+                    <input id="orgListTree" type="text">
+                </div>
+            </div>
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">账号：</span>
+                <div class="ui-search-item-right">
+                    <input class="ui-input-text" type="text" name="userCode" placeholder="账号" value="{{data.form.userCode}}" />
+                </div>
+            </div>
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">用户姓名：</span>
+                <div class="ui-search-item-right">
+                    <input class="ui-input-text" type="text" name="userName" placeholder="用户姓名" value="{{data.form.userName}}" />
+                </div>
+            </div>
+            <!--<div class="ui-search-item">
+                <span class="ui-search-item-left">工号：</span>
+                <div class="ui-search-item-right">
+                    <input class="ui-input-text" type="text" name="ghValue" placeholder="工号" value="{{data.form.ghValue}}" />
+                </div>
+            </div>-->
+            <div class="ui-search-item">
+                <input class="ui-btn ui-btn-blue" type="button" value="查询" onclick="search(1)" />
+                <input class="ui-btn ui-btn-green" type="button" value="新增" onclick="editCustomerDialog(0)" />
+            </div>
+        </div>
+    </form>
+
+    <div class="ui-table-box">
+        <table class="ui-table">
+            <caption class="ui-table-caption">搜索结果</caption>
+            <thead class="ui-table-thead">
+                <tr class="ui-table-center">
+                    <th class="ui-table-td">账号</th>
+                    <th class="ui-table-td">用户姓名</th>
+                    <th class="ui-table-td">机构层级</th>
+                    {{#each data.extConfigList}}
+                    <th class="ui-table-td">{{userExtName}}</th>
+                    {{/each}}
+                    <th class="ui-table-td">手机号</th>
+                    <th class="ui-table-td">邮箱</th>
+                    <th class="ui-table-td">创建时间</th>
+                    <th class="ui-table-td" style="width: 190px;">管理</th>
+                </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+            {{#p_condition data.customerList.length '=='0}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td" colspan="8">暂无数据</td>
+            </tr>
+            {{else}}
+            {{#each data.customerList}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td">{{userCode}}</td>
+                <td class="ui-table-td">{{userName}}</td>
+                <td class="ui-table-td">{{orgLevelName}}</td>
+                {{#each ../data.extConfigList}}
+                    {{#each ../extList}}
+                        {{#p_cod ../../userId '==' userId '&&' ../sid '==' userExtId}}
+                        <td class="ui-table-td">{{../extFinalValue}}</td>
+                        {{/p_cod}}
+                    {{/each}}
+                {{/each}}
+                <td class="ui-table-td">{{phone}}</td>
+                <td class="ui-table-td">{{email}}</td>
+                <td class="ui-table-td">{{createDate}}</td>
+                <td class="ui-table-td">
+                    {{#p_cod flag '==' 1}}
+                    <input class="ui-btn ui-btn-blue" type="button" value="编辑" onclick="editCustomerDialog('{{userId}}')" />
+                    <input class="ui-btn ui-btn-blue" type="button" value="角色授权" onclick="goBindRole('{{userId}}')" />
+                    <input class="ui-btn ui-btn-red" type="button" value="注销" onclick="deleteCustomer('{{userId}}')" />
+                    {{else}}
+                    <input class="ui-btn ui-btn-disable" type="button" value="编辑" />
+                    <input class="ui-btn ui-btn-disable" type="button" value="角色授权" />
+                    <input class="ui-btn ui-btn-disable" type="button" value="注销"  />
+                    {{/p_cod}}
+                </td>
+            </tr>
+            {{/each}}
+            {{/p_condition}}
+            </tbody>
+        </table>
+        <div id="pagination" page="{{data.form.currentPage}}" count="{{data.form.count}}" pos="c"></div>
+    </div>
+</div>
+<script id="editDialogScript" type="text/template">
+    <div id="editDialog" width="380" max-height="350">
+        <div class="ui-form">
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">账号：</span>
+                <div class="ui-form-right">
+                    <input class="ui-input-text" name="userCode" type="text" value="bg{bgScope.customer.userCode}" bg-trim placeholder="不超过15个字符" maxlength="15"/>
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">姓名：</span>
+                <div class="ui-form-right">
+                    <input class="ui-input-text" name="userName" type="text" value="bg{bgScope.customer.userName}" bg-trim placeholder="不超过15个字符" maxlength="15" />
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">手机号：</span>
+                <div class="ui-form-right">
+                    <input class="ui-input-text" name="phone" type="text" value="bg{bgScope.customer.phone}" bg-trim placeholder="手机号" maxlength="11" />
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">邮箱：</span>
+                <div class="ui-form-right">
+                    <input class="ui-input-text" name="email" type="text" value="bg{bgScope.customer.email}" bg-trim placeholder="不超过50个字符" maxlength="50" />
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <!--扩展展示-->
+            <bg:each items="bg{bgScope.extConfigList}" item="ext">
+                <!--自己的组织机构-->
+                <bg:if test="bg{ext.userExtCode=='self_org_code'}">
+                    <!--文本-->
+                    <bg:if test="bg{bgScope.orgShowType==1}">
+                        <div class="ui-form-row">
+                            <span class="base-tr ui-form-left">bg{ext.userExtName}：</span>
+                            <div class="ui-form-right">
+                                <bg:each items="bg{bgScope.customer.extList}" item="myExt">
+                                    <bg:if test="bg{myExt.userExtId==ext.sid}">
+                                        <input class="ui-input-text" type="text" value="bg{myExt.extFinalValue}" disabled="disabled" />
+                                        <input id="orgSidInDialog" type="hidden" name="ext_bg{ext.sid}" value="bg{myExt.userExtValue}" />
+                                        <bg:break />
+                                    </bg:if>
+                                </bg:each>
+                                <span class="ui-form-des-red">*</span>
+                            </div>
+                        </div>
+                        <!--机构层级-->
+                        <div class="ui-form-row">
+                            <span class="base-tr ui-form-left">机构层级：</span>
+                            <div class="ui-form-right">
+                                <input class="ui-input-text" type="text" value="bg{bgScope.customer.orgLevelName}" disabled="disabled" />
+                                <input type="hidden" name="orgLevelCode" value="bg{bgScope.customer.orgLevelCode}" />
+                                <span class="ui-form-des-red">*</span>
+                            </div>
+                        </div>
+                    </bg:if>
+                    <bg:elseIf test="bg{bgScope.orgShowType==2}">
+                        <!--树-->
+                        <div class="ui-form-row">
+                            <span class="base-tr ui-form-left">bg{ext.userExtName}：</span>
+                            <div class="ui-form-right">
+                                <bg:each items="bg{bgScope.customer.extList}" item="myExt">
+                                    <bg:if test="bg{myExt.userExtId==ext.sid}">
+                                        <input class="js-selfOrgTreeInDialog" toName="ext_bg{ext.sid}" valueId="bg{myExt.userExtValue}" value="bg{myExt.extFinalValue}" fromTable="bg{ext.fromTable}" fromColumns="bg{ext.fromColumns}" type="text" style="width: 144px;" />
+                                        <input id="orgSidInDialog" type="hidden" name="ext_bg{ext.sid}" value="bg{myExt.userExtValue}" />
+                                        <bg:break />
+                                    </bg:if>
+                                </bg:each>
+                                <span class="ui-form-des-red">*</span>
+                            </div>
+                        </div>
+                        <!--机构层级-->
+                        <div class="ui-form-row">
+                            <span class="base-tr ui-form-left">机构层级：</span>
+                            <div class="ui-form-right">
+                                <!--机构层级是揽投部5-->
+                                <bg:if text="bg{bgScope.customer.orgLevelCode==5}">
+                                    <input id="orgLevelNameIndialog" class="ui-input-text" type="text" value="bg{bgScope.customer.orgLevelName}" disabled="disabled" style="display: none" />
+                                    <select id="orgLevelNameSelectIndialog" class="ui-select" onchange="orgLevelSelectIndialogChange($(this))">
+                                        <option value="5" selected="selected">揽投部</option>
+                                        <option value="6">揽投员</option>
+                                    </select>
+                                </bg:if>
+                                <bg:elseIf text="bg{bgScope.customer.orgLevelCode==6}">
+                                    <!--机构层级是揽投员6-->
+                                    <input id="orgLevelNameIndialog" class="ui-input-text" type="text" value="bg{bgScope.customer.orgLevelName}" disabled="disabled" style="display: none" />
+                                    <select id="orgLevelNameSelectIndialog" class="ui-select"  onchange="orgLevelSelectIndialogChange($(this))">
+                                        <option value="5">揽投部</option>
+                                        <option value="6" selected="selected">揽投员</option>
+                                    </select>
+                                </bg:elseIf>
+                                <bg:else>
+                                    <input id="orgLevelNameIndialog" class="ui-input-text" type="text" value="bg{bgScope.customer.orgLevelName}" disabled="disabled" />
+                                    <select id="orgLevelNameSelectIndialog" class="ui-select" style="display: none" onchange="orgLevelSelectIndialogChange($(this))">
+                                        <option value="5">揽投部</option>
+                                        <option value="6" selected="selected">揽投员</option>
+                                    </select>
+                                </bg:else>
+                                <input type="hidden" name="orgLevelCode" value="bg{bgScope.customer.orgLevelCode}" />
+                                <span class="ui-form-des-red">*</span>
+                            </div>
+                        </div>
+                    </bg:elseIf>
+                </bg:if>
+                <bg:elseIf test="bg{ext.userExtCode=='self_gh_code'}">
+                    <!--自己的工号-->
+                    <div class="ui-form-row">
+                        <span class="base-tr ui-form-left">bg{ext.userExtName}：</span>
+                        <div class="ui-form-right">
+                            <!--文本-->
+                            <bg:each items="bg{bgScope.customer.extList}" item="myExt">
+                                <bg:if test="bg{ext.sid==myExt.userExtId}">
+                                    <input class="ui-input-text" name="ext_bg{ext.sid}"  type="text" value="bg{myExt.userExtValue}" bg-trim maxlength="15" placeholder="不超过15个字符" />
+                                    <bg:break />
+                                </bg:if>
+                            </bg:each>
+                            <span class="ui-form-des-red">揽投员必填</span>
+                        </div>
+                    </div>
+                </bg:elseIf>
+                <bg:elseIf test="bg{ext.userExtType==1}">
+                    <!--文本-->
+                    <div class="ui-form-row">
+                        <span class="base-tr ui-form-left">bg{ext.userExtName}：</span>
+                        <div class="ui-form-right">
+                            <bg:var gh=false ></bg:var>
+                            <bg:each items="bg{bgScope.customer.extList}" item="myExt">
+                                <bg:if test="bg{ext.sid==myExt.userExtId}">
+                                    <input class="ui-input-text" name="ext_bg{ext.sid}" type="text" value="bg{myExt.userExtValue}" bg-trim placeholder="不超过15个字符" maxlength="15" />
+                                    <bg:var gh=true ></bg:var>
+                                    <bg:break />
+                                </bg:if>
+                            </bg:each>
+                            <bg:if test="bg{!gh}">
+                                <input class="ui-input-text" name="ext_bg{ext.sid}" type="text" value="" bg-trim placeholder="不超过15个字符" maxlength="15" />
+                            </bg:if>
+                        </div>
+                    </div>
+                </bg:elseIf>
+                <bg:elseIf test="bg{ext.userExtType==3}">
+                    <!--树-->
+                    <div class="ui-form-row">
+                        <span class="base-tr ui-form-left">bg{ext.userExtName}：</span>
+                        <div class="ui-form-right">
+                            <bg:var org=false ></bg:var>
+                            <bg:each items="bg{bgScope.customer.extList}" item="myExt">
+                                <bg:if test="bg{ext.sid==myExt.userExtId}">
+                                    <input class="ui-input-text" name="ext_bg{ext.sid}" type="hidden" value="bg{myExt.userExtValue}"/>
+                                    <input class="js-selfOrgTreeInDialog" valueId="bg{myExt.userExtValue}" value="bg{myExt.extFinalValue}" fromTable="bg{ext.fromTable}" fromColumns="bg{ext.fromColumns}" toName="ext_bg{ext.sid}" style="width: 144px;" type="text" />
+                                    <bg:var org=true ></bg:var>
+                                    <bg:break />
+                                </bg:if>
+                            </bg:each>
+                            <bg:if test="bg{!org}">
+                                <input class="ui-input-text" name="ext_bg{ext.sid}" type="hidden" value="" />
+                                <input class="js-selfOrgTreeInDialog" value="" fromTable="bg{ext.fromTable}" fromColumns="bg{ext.fromColumns}" toName="ext_bg{ext.sid}" style="width: 144px;" type="text" />
+                            </bg:if>
+                        </div>
+                    </div>
+                </bg:elseIf>
+            </bg:each>
+        </div>
+    </div>
+</script>
+
+<script type="text/javascript">
+    function lookCustomer(userId){
+        bg.ajax({
+            url:"customer/getCustomerBySid?userId="+userId,
+            type:"get",
+            success:function (data) {
+
+            }
+        });
+    }
+
+    function search(page){
+        $("#currentPage").val(page);
+        $("#orgValue").val($("#orgListTree").combotree("getValue"));
+        bg.submit("#form");
+    }
+
+    $("#pagination").ui_pn({
+        clickEvent:function(page){
+            search(page);
+        }
+    });
+    var tree=bg.listToTree1({{{data.orgListStr}}});
+    tree.unshift({"id":0,"parentId":0,text:"全部"});
+    $("#orgListTree").combotree({
+        data:tree,
+        value:"{{data.form.orgValue}}"
+    });
+    var getCustomerDialogInfo=function (sid,callback) {
+        bg.ajax({
+            url:"/customer/getCustomerDialogInfo?userId="+sid,
+            type:"get",
+            success:function (data) {
+                if(data.status==1){
+                    callback(data);
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    })
+                }
+            }
+        });
+    };
+    function editCustomerDialog(sid) {
+        getCustomerDialogInfo(sid,function (data) {
+            var html=bg("#editDialogScript").tmp(data);
+            $("body").append(html);
+            //初始化界面中的dom树
+            setDomTreeInDialog(data);
+            $("#editDialog").ui_dg({
+                title:"新增",
+                btn:[
+                    {name:"确定",action:function () {
+                        saveCustomer(sid);
+                    }},
+                    {name:"取消",action:function () {
+                        $.ui_dgc("s");
+                    }}
+                ]
+            });
+        });
+    }
+
+    var setSaveDialogForm=function(data){
+        var json={};
+        json.ext="";
+        for(var k in data){
+            if(k.indexOf("ext_")!=-1){//扩展字段
+                json.ext+=k.substr(4)+":"+data[k]+";";
+            }else{
+                json[k]=data[k];
+            }
+        }
+        json.ext=json.ext.substring(0,json.ext.length-1);
+        return json;
+    };
+
+    function saveCustomer(sid) {
+        var data=bg("#editDialog").getForm(true);
+        if(!data.userCode){
+            $.ui_dg({
+                type:"e",
+                con:"账号为必填项"
+            });
+            return;
+        }
+        if(!data.userName){
+            $.ui_dg({
+                type:"e",
+                con:"用户名为必填项"
+            });
+            return;
+        }
+        if(!data.phone){
+            $.ui_dg({
+                type:"e",
+                con:"手机号为必填项"
+            });
+            return;
+        }
+        if(!bg.z.phone.test(data.phone)){
+            $.ui_dg({
+                type:"e",
+                con:"手机号格式错误"
+            });
+            return;
+        }
+        if(!data.email){
+            $.ui_dg({
+                type:"e",
+                con:"邮箱为必填项"
+            });
+            return;
+        }
+        if(!bg.z.email.test(data.email)){
+            $.ui_dg({
+                type:"e",
+                con:"邮箱格式错误"
+            });
+            return;
+        }
+        if(!$("#orgSidInDialog").val()){
+            $.ui_dg({
+                type:"e",
+                con:"组织机构为必填项"
+            });
+            return;
+        }
+        data=setSaveDialogForm(data);
+        /*if(data.orgLevelCode==6&&!data.gh){//揽投员，工号必填
+            $.ui_dg({
+                type:"e",
+                con:"工号为必填项"
+            });
+            return;
+        }*/
+        data.userId=sid;
+        bg.ajax({
+            url:"/customer/saveCustomer",
+            data:data,
+            success:function (data) {
+                if(data.status==1){
+                    $.ui_dg({
+                        type:"s",
+                        con:data.msg,
+                        btn:[
+                            {name:"确定",action:function () {
+                                search(1);
+                            }}
+                        ]
+                    });
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    });
+                }
+            }
+        });
+    }
+    /**
+     * 设置domTree 在弹框中
+     */
+    var setDomTreeInDialog=function (data) {
+        var extConfigList=data.extConfigList;
+        var len=extConfigList.length;
+        var extList=data.customer.extList;
+        for(var i=0;i<len;i++){
+            //获取扩展中的树
+            if(extConfigList[i].userExtType!=3||extConfigList[i].list==null){
+                continue;
+            }
+            //var tree=bg.listToTree1(extConfigList[i].list);
+            var tree=extConfigList[i].list;
+            /*if(extConfigList[i].userExtCode!="self_org_code"&&tree.length!=0){
+                tree.unshift({id:"0",text:"==不选=="});
+            }*/
+            if(tree.length!=0){
+                tree.unshift({id:"0",text:"==不选=="});
+            }
+            //获取用户的该扩展的值
+            var selectValue=getNeedExtValue(extList,extConfigList[i].sid);
+            if(selectValue==null){
+                selectValue={};
+            }
+            var extId=extConfigList[i].sid;
+            if(tree.length==0){
+                $("[toName=ext_"+extId+"]").ui_tree({
+                    data:tree
+                });
+            }else{
+                (function (extId,selectValue) {
+                    var selectNode={};
+                    selectNode.id=$("[toName=ext_"+extId+"]").attr("valueId");
+                    selectNode.text=$("[toName=ext_"+extId+"]").val();
+                    $("[toName=ext_"+extId+"]").ui_tree({
+                        data:tree,
+                        zIndex:2000,
+                        value:selectNode,
+                        //width:500,
+                        //maxHeight:600,
+                        //minHeight:400,
+                        height:350,
+                        //maxWidth:200,
+                        minWidth:300,
+                        maxWidth:600,
+                        clickObj:function (obj) {
+                            var id=obj.attr("tree-id");
+                            if(id==0){
+                                return false;
+                            }else{
+                                treeValueChange($("[toName=ext_"+extId+"]"),{id:id,orglevelcode:obj.attr("tree-orglevelcode")});
+                                return true;
+                            }
+                        },
+                        getChildFromObj:function (obj,callback) {
+                            var data={};
+                            data.fromTable=$("[toName=ext_"+extId+"]").attr("fromTable");
+                            data.fromColumns=$("[toName=ext_"+extId+"]").attr("fromColumns");
+                            data.fromTableSql="parent_org_code='"+obj.attr("tree-id")+"'";
+                            bg.ajax({
+                                url:"/customer/getNextLevel",
+                                data:data,
+                                success:function (data) {
+                                    callback(data.list);
+                                }
+                            });
+                        }
+                       /* click:function(node){
+                            if(node.id==0){
+                                return false;
+                            }else{
+                                treeValueChange($("[toName=ext_"+extId+"]"),node);
+                                return true;
+                            }
+                        },
+                        getChild:function(node,callback){
+                            var data={};
+                            data.fromTable=$("[toName=ext_"+extId+"]").attr("fromTable");
+                            data.fromColumns=$("[toName=ext_"+extId+"]").attr("fromColumns");
+                            data.fromTableSql="parent_org_code='"+node.id+"'";
+                            bg.ajax({
+                               url:"/customer/getNextLevel",
+                               data:data,
+                                success:function (data) {
+                                    callback(data.list);
+                                }
+                            });
+                        }*/
+
+                    });
+                })(extId,selectValue);
+            }
+
+        }
+    };
+    var treeValueChange=function (obj,node) {
+        var name=obj.attr("toName");
+        //设置组织机构id
+        $("[name="+name+"]").val(node.id);
+        if(name=="ext_2"){//如果是自己的组织机构发生改变，需要变动机构层级的展示状态
+            if(node.orglevelcode==5||node.orglevelcode==6){
+                $("#orgLevelNameIndialog").hide();
+                $("#orgLevelNameSelectIndialog").show();
+            }else{
+                $("#orgLevelNameSelectIndialog").hide();
+                $("#orgLevelNameIndialog").show();
+                //设置机构层级id
+                $("#editDialog input[name=orgLevelCode]").val(node.orglevelcode);
+            }
+        }
+    };
+    function orgLevelSelectIndialogChange(obj) {
+        $("#editDialog input[name=orgLevelCode]").val(obj.val());
+    }
+var getNeedExtValue=function (extList,extId) {
+    for(var i=0;i<extList.length;i++){
+        if(extList[i].userExtId==extId){
+            return extList[i];
+        }
+    }
+    return '0';
+};
+    function goBindRole(userId) {
+        //window.location.href="/customer/customerBindRolePage?userId="+userId;
+        bg.goPage("/customer/customerBindRolePage?userId="+userId);
+    }
+    var deleteCustomerAjax=function(userId){
+        bg.ajax({
+            url:"/customer/deleteCustomer?userId="+userId,
+            type:"get",
+            success:function (data) {
+                if(data.status==1){
+                    //$("#form").submit();
+                    bg.submit("#form");
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    });
+                }
+            }
+        });
+    };
+    function  deleteCustomer(userId) {
+        $.ui_dg({
+            type:"w",
+            con:"确认注销吗？",
+            btn:[
+                {name:"确定",action:function () {
+                    deleteCustomerAjax(userId);
+                }},
+                {name:"取消",action:function () {
+                    $.ui_dgc();
+                }}
+            ]
+        });
+    }
+</script>

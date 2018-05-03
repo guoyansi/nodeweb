@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>登录</title>
+		<link rel='stylesheet' href='/lazy/face/4/css/base.css' />
+		<link rel='stylesheet' href='/lazy/face/4/css/lazy.css' />
+		<link rel='stylesheet' href='/login/login.css' />
+	</head>
+	<body>
+		<div class="login-body">
+			<div class="login-title">EMS岗位任务看板管理系统</div>
+			<form id="form" action="/login/go" method="post">
+				<div class="login-form">
+					<div class="login-form-title">登录</div>
+					<div class="login-form-group">
+						<div class="login-form-left">用户名</div>
+						<div class="login-form-right">
+							<input id="userCode" class="login-form-input"  name="userCode" type="text" value="{{userCode}}" />
+						</div>
+					</div>
+					<div class="login-form-group">
+						<div class="login-form-left">密<span style="visibility: hidden">空</span>码</div>
+						<div class="login-form-right"><input id="pass" class="login-form-input"  name="password" type="password" value="{{password}}" /></div>
+					</div>
+					<div id="errMsg" style="color: red;">
+							{{msg}}
+					</div>
+					<div class="login-form-group">
+						<input class="login-form-btn" type="button" value="登录" onclick="login();" />
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="login-bj"></div>
+	</body>
+	<script src="/lazy/js/jquery-2.1.4.js"></script>
+	<script src="/lazy/ui/enter/enter.js"></script>
+<script type="text/javascript">
+	function login() {
+        $("#errMsg").html("");
+		var userCode=$("input[name=userCode]").val();
+		if(!userCode){
+		    $("#errMsg").html("账号不能为空");
+		    return;
+		}
+        var password=$("input[name=password]").val();
+        if(!password){
+            $("#errMsg").html("密码不能为空");
+            return;
+        }
+        $("#form").submit()
+    }
+    $("#userCode,#pass").ui_enter(function () {
+        login();
+    })
+</script>
+</html>

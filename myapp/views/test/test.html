@@ -1,0 +1,145 @@
+<div class="ui-page">
+    <form action="/test/requestType" method="get">
+        <input type="submit" value="form表单提交" />
+        <input type="button" value="ajax提交" onclick="goAjax()" />
+        <script>
+            function goAjax() {
+                $.ajax({
+                    url:"/test/requestType",
+                    type:"get",
+                    success:function (data) {
+                        console.log(data);
+                    },
+                    error:function () {
+                        alert("error");
+                    }
+                });
+            }
+        </script>
+    </form>
+
+
+
+    <!--<h1>读取缓存信息：{{cache.username}}</h1>-->
+    <h1>读取缓存信息：{{p_cache_getName 1 3}}</h1>
+
+
+<h1>测试post</h1>
+    <h1>{{p_gys '郭延思'}}</h1>
+    <form action="/test/form" method="post">
+    <div><input id="username" type="text" name="username" placeholder="username" /></div>
+    <div><input id="age" type="number" name="age" placeholder="age" /></div>
+    <div>
+        <select id="method">
+            <option value="get">ajax-Get</option>
+            <option value="post">ajax-post</option>
+        </select>
+    </div>
+     <div><input type="button" value="ajax"  onclick="search()" /></div>
+     <div><input type="submit" value="form提交"   /></div>
+    </form>
+    <div>
+        <h1>结果：</h1>
+        <div>{{str}}</div>
+        <div>username:{{data.username}}</div>
+        <div>age:{{data.age}}</div>
+    </div>
+    <div>
+        <h1>比较结果：</h1>
+        <div>比较：25和26</div>
+        <div>
+            {{#p_condition v1 '>' 26}}
+            <span style="color:blue">{{v1}}比26大</span>
+            {{else}}
+            <span style="color:red">{{v1}}比26小</span>
+            {{/p_condition}}
+        </div>
+    </div>
+    <div>
+        <h1>循环：</h1>
+        <ul>
+            {{#each list}}
+            <li>地名：{{name}}---人口：{{count}}人</li>
+            {{/each}}
+
+        </ul>
+
+    </div>
+<script>
+    function search() {
+        var data={};
+        data.username=$("#username").val();
+        data.age=$("#age").val();
+        bg.ajax({
+            url:"/test/list",
+            type:$("#method").val(),
+            data:data,
+            success:function (data) {
+                console.log(data);
+            },
+            error:function () {
+                alert("error");
+            }
+        });
+    }
+
+</script>
+<div>
+    <h1>测试java端是否可以远程返回Map；测试结果是可以返回Map和list</h1>
+    <input type="button" value="测试java端是否可以远程返回Map" onclick="testMap()">
+    <script>
+        function testMap() {
+            bg.ajax({
+                url:"/test/testMap",
+                type:"get",
+                success:function (data) {
+                    console.log(data);
+                },
+                error:function () {
+                    alert("error");
+                }
+            });
+        }
+    </script>
+</div>
+
+<div>
+    <h1>测试java端不使用@requestBody接受参数，测试结果不行</h1>
+    <input type="button" value="测试java端不使用@requestBody接受参数" onclick="testParamNoBody()">
+    <script>
+        function testParamNoBody() {
+            bg.ajax({
+                url:"/test/testParamNoBody",
+                type:"get",
+                success:function (data) {
+                    console.log(data);
+                },
+                error:function () {
+                    alert("error");
+                }
+            });
+        }
+    </script>
+</div>
+
+<div>
+    <h1>读取json文件</h1>
+    <input type="button" value="读取json文件" onclick="readJson()">
+    <script>
+        function readJson() {
+            bg.ajax({
+                url:"/test/readJson",
+                type:"get",
+                success:function (data) {
+                    console.log(data);
+                },
+                error:function () {
+                    alert("error");
+                }
+            });
+        }
+    </script>
+</div>
+
+</div>
+<div style="height: 500px; width: 100px"></div>

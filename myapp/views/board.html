@@ -1,0 +1,249 @@
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">看板管理</span>
+    </div>
+    <div class="ui-search">
+        <form id="form" action="/board/page" method="post">
+            <input id="currentPage" type="hidden" name="currentPage" value="{{data.form.currentPage}}" />
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">看板名称：</span>
+                <div class="ui-search-item-right">
+                    <input class="ui-input-text" name="boardName" type="text" value="{{data.form.boardName}}" placeholder="看板名称" />
+                </div>
+            </div>
+            <div class="ui-search-item">
+                <input class="ui-btn ui-btn-blue" type="button" value="查询" onclick="search(1)" />
+                <input class="ui-btn ui-btn-green" type="button" value="新增" onclick="boardDialog(0)" />
+            </div>
+        </form>
+    </div>
+    <div class="ui-table-box">
+        <table class="ui-table">
+            <caption class="ui-table-caption">搜索结果</caption>
+            <thead class="ui-table-thead">
+            <tr class="ui-table-center">
+                <th class="ui-table-td">看板名称</th>
+                <th class="ui-table-td">看板分类</th>
+                <th class="ui-table-td">看板机构层级</th>
+                <th class="ui-table-td">看板url</th>
+                <th class="ui-table-td">看板描述</th>
+                <th class="ui-table-td" style="width: 190px;">管理</th>
+            </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+            {{#p_cod data.list.length '==' 0}}
+            <tr class="ui-table-tr">
+                    <td class="ui-table-td" colspan="6">暂无数据</td>
+                </tr>
+            {{else}}
+            {{#each data.list}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td">{{boardName}}</td>
+                <td class="ui-table-td">{{typeName}}</td>
+                <td class="ui-table-td">{{orgLevelName}}</td>
+                <td class="ui-table-td">{{boardUrl}}</td>
+                <td class="ui-table-td">{{boardDesc}}</td>
+                <td class="ui-table-td">
+                    <input class="ui-btn ui-btn-blue" type="button" value="编辑" onclick="boardDialog('{{sid}}')" />
+                    <input class="ui-btn ui-btn-blue" type="button" value="角色授权" onclick="goBindRole('{{sid}}')" />
+                    <input class="ui-btn ui-btn-red" type="button" value="注销" onclick="deleteBoardW('{{sid}}')" />
+                </td>
+            </tr>
+            {{/each}}
+            {{/p_cod}}
+
+            </tbody>
+        </table>
+        <div id="pagination" page="{{data.form.currentPage}}" count="{{data.form.count}}"></div>
+    </div>
+</div>
+</body>
+<script id="boardEditDialogScript" type="text/template">
+    <div id="boardEditDialog" width="360">
+        <div class="ui-form">
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left" name="boardName">看板名称：</span>
+                <div class="ui-form-right">
+                    <input class="ui-input-text" name="boardName" value="bg{bgScope.board.boardName}" type="text" maxlength="50" placeholder="50字符以内" />
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">机构层级：</span>
+                <div class="ui-form-right">
+                    <select class="ui-select" name="orgLevelCode">
+                        <bg:each items="bg{bgScope.orgLevelList}" item="level">
+                            <bg:if test="bg{level.sid==bgScope.board.orgLevelCode}">
+                                <option value="bg{level.sid}" selected="selected">bg{level.orgLevelName}</option>
+                            </bg:if>
+                            <bg:else>
+                                <option value="bg{level.sid}">bg{level.orgLevelName}</option>
+                            </bg:else>
+                        </bg:each>
+                    </select>
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">看板分类：</span>
+                <div class="ui-form-right">
+                    <select class="ui-select" name="boardType">
+                        <bg:each items="bg{bgScope.typeList}" item="type">
+                            <bg:if test="bg{type.sid==bgScope.board.boardType}">
+                                <option value="bg{type.sid}" selected="selected">bg{type.typeName}</option>
+                            </bg:if>
+                            <bg:else>
+                                <option value="bg{type.sid}">bg{type.typeName}</option>
+                            </bg:else>
+                        </bg:each>
+                    </select>
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">看板url：</span>
+                <div class="ui-form-right">
+                    <input class="ui-input-text" name="boardUrl" value="bg{bgScope.board.boardUrl}" type="text" placeholder="url" />
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">看板描述：</span>
+                <div class="ui-form-right">
+                    <textarea class="ui-textarea" name="boardDesc"  maxlength="200" placeholder="200字符以内">bg{bgScope.board.boardDesc}</textarea>
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/javascript">
+    function search(page) {
+        $("#currentPage").val(page);
+        //$("#form").submit();
+        bg.submit("#form");
+    }
+    function  goBindRole(boardId) {
+        //window.location.href="/board/boardBindRolePage?boardId="+boardId;
+        bg.goPage("/board/boardBindRolePage?boardId="+boardId);
+    }
+    var getEditDialog=function (boardId,callback) {
+        bg.ajax({
+            type:"get",
+            url:"/board/getEditDialogInfo?boardId="+boardId,
+            success:function (data) {
+                if(data.status==1){
+                    callback(data);
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    })
+                }
+            }
+        });
+    };
+    var saveEditBoard=function (sid) {
+        var data=bg("#boardEditDialog").getForm(true);
+        data.sid=sid;
+        if(!data.boardName){
+            $.ui_dg({
+                con:"请填写看板名称"
+            });
+            return;
+        }
+        if(!data.boardUrl){
+            $.ui_dg({
+                con:"请填写看板Url"
+            });
+            return;
+        }
+        if(!data.boardDesc){
+            $.ui_dg({
+                con:"请填写看板描述"
+            });
+            return;
+        }
+        bg.ajax({
+           url:"/board/saveBoard",
+           data:data,
+           success:function (data) {
+               if(data.status==1){
+                   $.ui_dg({
+                       type:"s",
+                       con:data.msg,
+                       btn:[
+                           {name:"确定",action:function () {
+                               search(1);
+                           }}
+                       ]
+                   }); 
+               }else{
+                   $.ui_dg({
+                       con:data.msg
+                   });
+               }
+           } 
+        });
+    };
+    function boardDialog(sid) {
+        getEditDialog(sid,function (data) {
+            var html=bg("#boardEditDialogScript").tmp(data);
+            $("body").append(html);
+            $("#boardEditDialog").ui_dg({
+                title:"新增",
+                btn:[
+                    {name:"确定",action:function () {
+                        saveEditBoard(sid);
+                    }},
+                    {name:"取消",action:function () {
+                        $.ui_dgc("s");
+                    }}
+                ]
+            });
+        });
+    }
+
+    $("#pagination").ui_pn({
+        clickEvent:function(page){
+            search(page);
+        }
+    });
+    function deleteBoard(boardId) {
+        bg.ajax({
+            url:"/board/deleteBoard?boardId="+boardId,
+            success:function (data) {
+                if(data.status==1){
+                    $.ui_dg({
+                        type:"s",
+                        con:data.msg,
+                        btn:[
+                            {name:"确定",action:function () {
+                                //$("#form").submit();
+                                bg.submit("#form");
+                            }}
+                        ]
+                    });
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    });
+                }
+            }
+        });
+    }
+    function deleteBoardW(boardId) {
+        $.ui_dg({
+            type:"w",
+            con:"确定注销该看板",
+            btn:[
+                {name:"确定",action:function () {
+                    deleteBoard(boardId);
+                }},{name:"取消",action:function () {
+                    $.ui_dgc();
+                }}
+            ]
+        })
+    }
+</script>

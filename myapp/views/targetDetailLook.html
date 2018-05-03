@@ -1,0 +1,51 @@
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-history">目标值管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">设置目标值</span>
+
+    </div>
+        <div class="ui-search">
+            <div class="ui-search-item">
+                <input class="ui-btn ui-btn-red" type="button" value="返回" onclick="goTargetPage()" />
+            </div>
+        </div>
+    </form>
+
+    <div class="ui-table-box">
+        <table class="ui-table">
+            <caption class="ui-table-caption">搜索结果</caption>
+            <thead class="ui-table-thead">
+                <tr id="theadTdHtml" class="ui-table-center">
+                </tr>
+            </thead>
+            <tbody id="tbodyHtml" class="ui-table-tbody ui-table-center">
+            </tbody>
+        </table>
+    </div>
+</div>
+<input id="data" type="hidden" value="{{data}}"/>
+<script type="text/javascript">
+    function goTargetPage() {
+        window.location.href="/targetValue/page";
+    }
+    var data=JSON.parse($("#data").val());
+    console.log(data);
+    var theadHtml="";
+    var tbodyHtml="";
+    for(var i=0;i<data.colInfo.length;i++){
+        theadHtml+="<th class='ui-table-td'>"+data.colInfo[i].colName+"</th>";
+    }
+    var col="";
+    for(i=0;i<data.list.length;i++){
+        tbodyHtml+="<tr class='ui-table-tr'>";
+        for(var j=0;j<data.colParam.length;j++){
+            tbodyHtml+="<td class='ui-table-td'>"+data.list[i][data.colParam[j]]+"</td>";
+        }
+        tbodyHtml+="</tr>";
+    }
+    $("#theadTdHtml").html(theadHtml);
+    $("#tbodyHtml").html(tbodyHtml);
+</script>

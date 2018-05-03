@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>角色管理</title>
+    <link rel="stylesheet" href="../lazy/face/4/css/base.css">
+    <link rel="stylesheet" href="../lazy/face/4/css/lazy.css">
+    <link rel="stylesheet" href="../lazy/ui/dialog/dialog.css">
+    <link rel="stylesheet" href="../lazy/ui/pagination/pagination.css">
+    <link rel="stylesheet" href="../stylesheets/style.css">
+
+    <script type="text/javascript" src="../lazy/js/jquery-2.1.4.min.js" ></script>
+    <script type="text/javascript" src="../lazy/js/bridge27.js" ></script>
+    <script type="text/javascript" src="../lazy/ui/dialog/dialog.js"></script>
+    <script type="text/javascript" src="../lazy/ui/pagination/pagination.js"></script>
+</head>
+<body>
+<div class="ui-head">
+    <div class="base-fl">
+        <span class="ui-logo"></span>
+        <span class="ui-logo-text">权限管理系统</span>
+    </div>
+    <div class="base-fr">
+        <span class="ui-head-text ui-head-icon">张三</span>
+        <span class="ui-head-text ui-out-icon">退出</span>
+    </div>
+</div>
+<ul class="ui-menu">
+    <li class="ui-menu-item ui-menu-item-active">
+        <div class="ui-menu-item-title ui-menu-item-title-bj">权限管理</div>
+        <div class="ui-menu-item-text">用户账号管理</div>
+        <div class="ui-menu-item-text">管理员账号管理</div>
+        <div class="ui-menu-item-text">角色管理</div>
+        <div class="ui-menu-item-text">看板管理</div>
+        <div class="ui-menu-item-text">用户看板查询</div>
+    </li>
+</ul>
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">角色管理</span>
+    </div>
+    <div class="ui-search">
+        <div class="ui-search-item">
+            <span class="ui-search-item-left">角色名称：</span>
+            <div class="ui-search-item-right">
+                <input class="ui-input-text" type="text" placeholder="角色名称" />
+            </div>
+        </div>
+        <div class="ui-search-item">
+            <input class="ui-btn ui-btn-blue" type="button" value="查询" />
+            <input class="ui-btn ui-btn-green" type="button" value="新增" onclick="addCount()" />
+        </div>
+    </div>
+    <div class="ui-table-box">
+        <table class="ui-table">
+            <caption class="ui-table-caption">搜索结果</caption>
+            <thead class="ui-table-thead">
+                <tr class="ui-table-center">
+                    <th class="ui-table-td">
+                        <span class="ui-checkbox">
+                            <input type="checkbox" />全选
+                        </span>
+                    </th>
+                    <th class="ui-table-td">角色名称</th>
+                    <th class="ui-table-td">机构层级</th>
+                    <th class="ui-table-td">创建人</th>
+                    <th class="ui-table-td">创建时间</th>
+                    <th class="ui-table-td" style="width: 370px;">管理</th>
+                </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">
+                        <span class="ui-checkbox">
+                            <input type="checkbox" />
+                        </span>
+                    </td>
+                    <td class="ui-table-td">角色名称</td>
+                    <td class="ui-table-td">机构层级</td>
+                    <td class="ui-table-td">创建人</td>
+                    <td class="ui-table-td">创建时间</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-blue" type="button" value="编辑" />
+                        <input class="ui-btn ui-btn-blue" type="button" value="用户授权" />
+                        <input class="ui-btn ui-btn-blue" type="button" value="看板授权" />
+                        <input class="ui-btn ui-btn-blue" type="button" value="机构授权授权" />
+                        <input class="ui-btn ui-btn-red" type="button" value="注销" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="pagination"></div>
+    </div>
+</div>
+</body>
+<script id="roleEditDialogScript" type="text/template">
+    <div id="roleEditDialog" width="300">
+        <div class="ui-form">
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">角色名称：</span>
+                <div class="ui-form-right">
+                    <input class="ui-input-text" type="text" placeholder="账号" />
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">机构层级：</span>
+                <div class="ui-form-right">
+                    <input class="ui-input-text" type="text" placeholder="点击选择机构层级" />
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<style type="text/css">
+
+</style>
+<script id="orgBindRoleScript" type="text/template">
+    <div id="orgBindRoleDialog" width="600">
+        <div class="orgBindRoleLeft">
+            sada
+        </div>
+        <div class="orgBindRoleRight">
+            <table class="ui-table">
+                <tbody class="ui-table-tbody ui-table-center">
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">安徽省</td>
+                    <td class="ui-table-td" style="width: 50px">
+                        <input class="ui-btn ui-btn-red" type="button" value="删除" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">安徽省</td>
+                    <td class="ui-table-td" style="width: 50px">
+                        <input class="ui-btn ui-btn-red" type="button" value="删除" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">安徽省</td>
+                    <td class="ui-table-td" style="width: 50px">
+                        <input class="ui-btn ui-btn-red" type="button" value="删除" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">安徽省</td>
+                    <td class="ui-table-td" style="width: 50px">
+                        <input class="ui-btn ui-btn-red" type="button" value="删除" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">安徽省</td>
+                    <td class="ui-table-td" style="width: 50px">
+                        <input class="ui-btn ui-btn-red" type="button" value="删除" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">安徽省</td>
+                    <td class="ui-table-td" style="width: 50px">
+                        <input class="ui-btn ui-btn-red" type="button" value="删除" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">安徽省</td>
+                    <td class="ui-table-td" style="width: 50px">
+                        <input class="ui-btn ui-btn-red" type="button" value="删除" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">安徽省</td>
+                    <td class="ui-table-td" style="width: 50px">
+                        <input class="ui-btn ui-btn-red" type="button" value="删除" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">安徽省</td>
+                    <td class="ui-table-td" style="width: 50px">
+                        <input class="ui-btn ui-btn-red" type="button" value="删除" />
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/javascript">
+    $(function () {
+        var html=$("#orgBindRoleScript").html();
+        $("body").append(html);
+        $("#orgBindRoleDialog").ui_dg({
+            btn:[
+                {name:"确定",action:function () {
+                    alert(1)
+                }}
+            ]
+        })
+    })
+
+    function addCount() {
+        var html=$("#roleEditDialogScript").html();
+        $("body").append(html);
+        $("#roleEditDialog").ui_dg({
+            title:"新增",
+            btn:[
+                {name:"确定",action:function () {
+                    alert("确定")
+                }},
+                {name:"取消",action:function () {
+                    $.ui_dgc("s");
+                }}
+            ]
+        });
+    }
+
+    $("#pagination").ui_pn({
+        count:1010, //总数
+        size:10, //每页展示条数
+        pos:"r",//位置
+        page:2,	//当前页
+        clickEvent:function(page){
+            /**
+             * 这里是发生事件之后的回调函数
+             * page是发生事件后的页码
+             */
+            //getData(page);
+        }
+    });
+
+
+</script>
+</html>

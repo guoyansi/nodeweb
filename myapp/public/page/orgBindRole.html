@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>角色管理</title>
+    <link rel="stylesheet" href="../lazy/face/4/css/base.css">
+    <link rel="stylesheet" href="../lazy/face/4/css/lazy.css">
+    <link rel="stylesheet" href="../lazy/ui/dialog/dialog.css">
+    <link rel="stylesheet" href="../lazy/ui/pagination/pagination.css">
+    <link rel="stylesheet" href="../stylesheets/style.css">
+
+    <script type="text/javascript" src="../lazy/js/jquery-2.1.4.min.js" ></script>
+    <script type="text/javascript" src="../lazy/js/bridge27.js" ></script>
+    <script type="text/javascript" src="../lazy/ui/dialog/dialog.js"></script>
+    <script type="text/javascript" src="../lazy/ui/pagination/pagination.js"></script>
+</head>
+<body>
+<div class="ui-head">
+    <div class="base-fl">
+        <span class="ui-logo"></span>
+        <span class="ui-logo-text">权限管理系统</span>
+    </div>
+    <div class="base-fr">
+        <span class="ui-head-text ui-head-icon">张三</span>
+        <span class="ui-head-text ui-out-icon">退出</span>
+    </div>
+</div>
+<ul class="ui-menu">
+    <li class="ui-menu-item ui-menu-item-active">
+        <div class="ui-menu-item-title ui-menu-item-title-bj">权限管理</div>
+        <div class="ui-menu-item-text">用户账号管理</div>
+        <div class="ui-menu-item-text">管理员账号管理</div>
+        <div class="ui-menu-item-text">角色管理</div>
+        <div class="ui-menu-item-text">看板管理</div>
+        <div class="ui-menu-item-text">用户看板查询</div>
+    </li>
+</ul>
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-history">角色管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">角色授权</span>
+    </div>
+    <div class="qx-bind-desc">
+        <span class="base-pr20">当前角色：{{data.role.roleName}}</span>
+        <span class="base-pr20">机构层级：{{data.role.orgLevelName}}</span>
+        <span><input class="ui-btn ui-btn-red" type="button" value="返回" onclick="goRolePage()" /></span>
+    </div>
+    <div class="orgBindRoleLeft">
+        <table class="ui-table">
+            <thead class="ui-table-thead">
+            <tr class="ui-table-center">
+                <th class="ui-table-th">待绑机构名</th>
+                <th class="ui-table-th" style="width: 50px">操作</th>
+            </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">bg{org.orgShortName}</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-red" type="button" value="绑定" onclick="orgBindRole(bg{org.sid},bg{bgScope.form.roleId},bg{bgScope.form.orgLevelCode})" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">bg{org.orgShortName}</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-red" type="button" value="绑定" onclick="orgBindRole(bg{org.sid},bg{bgScope.form.roleId},bg{bgScope.form.orgLevelCode})" />
+                    </td>
+                </tr>
+            <!--<bg:each items="bg{bgScope.noBindList}" item="org">
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">bg{org.orgShortName}</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-red" type="button" value="绑定" onclick="orgBindRole(bg{org.sid},bg{bgScope.form.roleId},bg{bgScope.form.orgLevelCode})" />
+                    </td>
+                </tr>
+            </bg:each>-->
+            </tbody>
+        </table>
+    </div>
+    <div class="orgBindRoleRight">
+        <table class="ui-table">
+            <thead class="ui-table-thead">
+            <tr class="ui-table-center">
+                <th class="ui-table-th">已绑机构名</th>
+                <th class="ui-table-th" style="width: 50px">操作</th>
+            </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">bg{org.orgShortName}</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-yellow" type="button" value="解绑" onclick="orgNoBindRole(bg{org.rsId})" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">bg{org.orgShortName}</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-yellow" type="button" value="解绑" onclick="orgNoBindRole(bg{org.rsId})" />
+                    </td>
+                </tr>
+            <!--<bg:each items="bg{bgScope.bindList}" item="org">
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">bg{org.orgShortName}</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-yellow" type="button" value="解绑" onclick="orgNoBindRole(bg{org.rsId})" />
+                    </td>
+                </tr>
+            </bg:each>-->
+            </tbody>
+        </table>
+    </div>
+</div>
+<form id="form" action="/orgBindRole/page" method="get">
+    <input type="hidden" name="roleId" value="{{data.form.roleId}}"/>
+</form>
+</body>
+<script type="text/javascript">
+    function orgBindRole(orgId,roleId) {
+        bg.ajax({
+            url:"/role/orgBindRole",
+            data:{orgId:orgId,roleId:roleId},
+            success:function (data) {
+                if(data.status==1){
+                    $.ui_dg({
+                        type:"s",
+                        con:data.msg,
+                        btn:function () {
+                            $("#form").submit();
+                        }
+                    });
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    })
+                }
+            }
+        });
+    }
+    function orgNoBindRole(rsId) {
+        bg.ajax({
+            url:"/role/orgNoBindRole",
+            data:{rsId:rsId},
+            success:function (data) {
+                if(data.status==1){
+                    $.ui_dg({
+                        type:"s",
+                        con:data.msg,
+                        btn:function () {
+                            $("#form").submit();
+                        }
+                    });
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+</html>

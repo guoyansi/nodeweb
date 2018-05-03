@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员账号管理</title>
+    <link rel="stylesheet" href="../lazy/face/4/css/base.css">
+    <link rel="stylesheet" href="../lazy/face/4/css/lazy.css">
+    <link rel="stylesheet" href="../lazy/ui/dialog/dialog.css">
+    <link rel="stylesheet" href="../lazy/ui/pagination/pagination.css">
+
+    <script type="text/javascript" src="../lazy/js/jquery-2.1.4.min.js" ></script>
+    <script type="text/javascript" src="../lazy/js/bridge27.js" ></script>
+    <script type="text/javascript" src="../lazy/ui/dialog/dialog.js"></script>
+    <script type="text/javascript" src="../lazy/ui/pagination/pagination.js"></script>
+</head>
+<body>
+<div class="ui-head">
+    <div class="base-fl">
+        <span class="ui-logo"></span>
+        <span class="ui-logo-text">权限管理系统</span>
+    </div>
+    <div class="base-fr">
+        <span class="ui-head-text ui-head-icon">张三</span>
+        <span class="ui-head-text ui-out-icon">退出</span>
+    </div>
+</div>
+<ul class="ui-menu">
+    <li class="ui-menu-item ui-menu-item-active">
+        <div class="ui-menu-item-title ui-menu-item-title-bj">权限管理</div>
+        <div class="ui-menu-item-text">用户账号管理</div>
+        <div class="ui-menu-item-text">管理员账号管理</div>
+        <div class="ui-menu-item-text">角色管理</div>
+        <div class="ui-menu-item-text">看板管理</div>
+        <div class="ui-menu-item-text">用户看板查询</div>
+        <div class="ui-menu-item-text">目标值管理</div>
+    </li>
+</ul>
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">目标值管理</span>
+    </div>
+    <div class="ui-search">
+        <div class="ui-search-item">
+            <span class="ui-search-item-left">看板名称：</span>
+            <div class="ui-search-item-right">
+                <input class="ui-input-text" type="text" placeholder="看板名称" />
+            </div>
+        </div>
+        <div class="ui-search-item">
+            <input class="ui-btn ui-btn-blue" type="button" value="查询" />
+        </div>
+    </div>
+    <div class="ui-table-box">
+        <table class="ui-table">
+            <caption class="ui-table-caption">搜索结果</caption>
+            <thead class="ui-table-thead">
+                <tr class="ui-table-center">
+                    <td class="ui-table-td">看板名名称</td>
+                    <td class="ui-table-td">指标名称</td>
+                    <td class="ui-table-td">模板名称</td>
+                    <td class="ui-table-td">指标描述</td>
+                    <td class="ui-table-td">指标账期</td>
+                    <td class="ui-table-td" style="width: 190px;">管理</td>
+                </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">看板名名称</td>
+                    <td class="ui-table-td">指标名称</td>
+                    <td class="ui-table-td">模板名称</td>
+                    <td class="ui-table-td">指标描述</td>
+                    <td class="ui-table-td">指标账期</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-blue" type="button" value="设置指标值" />
+                        <input class="ui-btn ui-btn-green" type="button" value="查看指标值" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">看板名名称</td>
+                    <td class="ui-table-td">指标名称</td>
+                    <td class="ui-table-td">模板名称</td>
+                    <td class="ui-table-td">指标描述</td>
+                    <td class="ui-table-td">指标账期</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-blue" type="button" value="设置指标值" />
+                        <input class="ui-btn ui-btn-green" type="button" value="查看指标值" />
+                    </td>
+                </tr>
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">看板名名称</td>
+                    <td class="ui-table-td">指标名称</td>
+                    <td class="ui-table-td">模板名称</td>
+                    <td class="ui-table-td">指标描述</td>
+                    <td class="ui-table-td">指标账期</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-blue" type="button" value="设置指标值" />
+                        <input class="ui-btn ui-btn-green" type="button" value="查看指标值" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="pagination"></div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $("#pagination").ui_pn({
+        count:1010, //总数
+        size:10, //每页展示条数
+        pos:"r",//位置
+        page:2,	//当前页
+        clickEvent:function(page){
+            /**
+             * 这里是发生事件之后的回调函数
+             * page是发生事件后的页码
+             */
+            //getData(page);
+        }
+    });
+</script>
+</html>

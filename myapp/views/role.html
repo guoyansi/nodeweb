@@ -1,0 +1,277 @@
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">角色管理</span>
+    </div>
+    <form id="form" action="/role/page" method="post">
+        <input type="hidden" name="currentPage" value="{{data.form.currentPage}}" />
+        <div class="ui-search">
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">角色名称：</span>
+                <div class="ui-search-item-right">
+                    <input class="ui-input-text" type="text" name="roleName" value="{{data.form.roleName}}" placeholder="角色名称"/>
+                </div>
+            </div>
+            <div class="ui-search-item">
+                <input class="ui-btn ui-btn-blue" type="button" value="查询" onclick="search(1)"/>
+                <input class="ui-btn ui-btn-green" type="button" value="新增" onclick="editRole(0)"/>
+            </div>
+        </div>
+    </form>
+
+    <div class="ui-table-box">
+        <table class="ui-table">
+            <caption class="ui-table-caption">搜索结果</caption>
+            <thead class="ui-table-thead">
+            <tr class="ui-table-center">
+               <!-- <td class="ui-table-td">
+                        <span class="ui-checkbox">
+                            <input type="checkbox"/>全选
+                        </span>
+                </td>-->
+                <th class="ui-table-td">角色名称</th>
+                <th class="ui-table-td">机构层级</th>
+                <th class="ui-table-td">创建人</th>
+                <th class="ui-table-td">创建时间</th>
+                <th class="ui-table-td" style="width: 370px;">管理</th>
+            </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+            {{#p_condition data.list.length '==' 0}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td" colspan="5">暂无数据</td>
+            </tr>
+            {{else}}
+                {{#each data.list}}
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">{{roleName}}</td>
+                    <td class="ui-table-td">{{orgLevelName}}</td>
+                    <td class="ui-table-td">{{userName}}</td>
+                    <td class="ui-table-td">{{createDate}}</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-blue" type="button" value="编辑" onclick="editRole('{{sid}}')"/>
+                        <input class="ui-btn ui-btn-blue" type="button" value="机构授权" onclick="goBindOrg('{{sid}}')"/>
+                        <input class="ui-btn ui-btn-blue" type="button" value="用户授权" onclick="goBindUser('{{sid}}')"/>
+                        <input class="ui-btn ui-btn-blue" type="button" value="看板授权" onclick="goBindBoard('{{sid}}')"/>
+                        <input class="ui-btn ui-btn-red" type="button" value="注销" onclick="deleteRoleDialog('{{sid}}')"/>
+                    </td>
+                </tr>
+                {{/each}}
+            {{/p_condition}}
+            </tbody>
+        </table>
+        <div id="pagination" page="{{data.form.currentPage}}" count="{{data.form.count}}"></div>
+    </div>
+</div>
+<form id="orgBinRoleForm" action="/orgBindRole/page" method="post">
+    <input id="orgBindRoleFormRoleId" name="roleId" type="hidden" value="" />
+</form>
+<form id="userBindRoleForm" action="/userBindRole/page" method="post">
+    <input type="hidden" name="roleId" value="" />
+</form>
+<script id="roleEditDialogScript" type="text/template">
+    <div id="roleEditDialog" width="300">
+        <div class="ui-form">
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">角色名称：</span>
+                <div class="ui-form-right">
+                    <input class="ui-input-text" type="text" name="roleName" value="bg{bgScope.role.roleName}" placeholder="不超过20个字符" maxlength="20" />
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">机构层级：</span>
+                <div class="ui-form-right">
+                    <select class="ui-select" name="orgLevelCode" onchange="changeOrgLevel($(this))">
+                        <bg:each items="bg{bgScope.orglist}" item="org">
+                            <bg:if test="bg{bgScope.role.orgLevelCode==org.sid}">
+                                <option value="bg{org.sid}" selected="selected">bg{org.orgLevelName}</option>
+                            </bg:if>
+                            <bg:else>
+                                <option value="bg{org.sid}">bg{org.orgLevelName}</option>
+                            </bg:else>
+                        </bg:each>
+                    </select>
+                    <span class="ui-form-des-red">*</span>
+                </div>
+            </div>
+            <div class="ui-form-row">
+                <span class="base-tr ui-form-left">父级角色：</span>
+                <div class="ui-form-right">
+                    <select id="parentIdInDialog" class="ui-select" name="parentId">
+                        <option value="0">=无父级=</option>
+                        <bg:each items="bg{bgScope.roleList}" item="role">
+                            <bg:if test="bg{role.sid==bgScope.role.parentId}">
+                                <option value="bg{role.sid}" selected="selected">bg{role.roleName}</option>
+                            </bg:if>
+                            <bg:else>
+                                <option value="bg{role.sid}">bg{role.roleName}</option>
+                            </bg:else>
+                        </bg:each>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script>
+    function search(page) {
+        $("input[name=currentPage]").val(page);
+        //$("#form").submit();
+        bg.submit("#form");
+    }
+
+    $("#pagination").ui_pn({
+        clickEvent: function (page) {
+            search(page);
+        }
+    });
+function changeOrgLevel(obj) {
+    var orgLevelCode=obj.val();
+    bg.ajax({
+        type:"get",
+        url:"/role/getEqualLevelRoleListByLevelCode?orgLevelCode="+orgLevelCode,
+        success:function (data) {
+            if(data.status==1){
+                var html=getParentOptionHtml(data.roleList);
+                $("#parentIdInDialog").html(html);
+            }else{
+                $.ui_dg({
+                    con:data.msg
+                });
+            }
+        }
+    });
+}
+var getParentOptionHtml=function (list) {
+    var html="";
+    html+="<option value='0'>=无父级=</option>";
+    var len=list.length;
+    for(var i=0;i<len;i++){
+        html+="<option value='"+list[i].sid+"'>"+list[i].roleName+"</option>";
+    }
+    return html;
+};
+    function getEditDialogInfo(sid,callback) {
+        bg.ajax({
+            url:"/role/getEditDialogInfo?sid="+sid,
+            success:function (data) {
+                if(data.status==1){
+                    callback(data);
+                }
+            }
+        });
+    }
+
+    function editRole(sid){
+        getEditDialogInfo(sid,function (data) {
+            var html=bg("#roleEditDialogScript").tmp(data);
+
+            $("body").append(html);
+            $("#roleEditDialog").ui_dg({
+                title:"添加角色",
+                btn:[
+                    {name:"确定",action:function () {
+                        saveRole(sid);
+                    }},
+                    {name:"取消",action:function () {
+                        $.ui_dgc();
+                    }}
+                ]
+            });
+        });
+    }
+    
+    
+    function saveRole(sid) {
+       var data=bg("#roleEditDialog").getForm(true);
+       if(!data.roleName){
+           $.ui_dg({
+               con:"角色名称不能为空"
+           });
+           return;
+       }
+       data.roleName=$.trim(data.roleName);
+       data.sid=sid;
+        bg.ajax({
+            url:"/role/saveRole",
+            data:data,
+            success:function (data) {
+                if(data.status==1){
+                    $.ui_dg({
+                        type:"s",
+                        con:data.msg,
+                        btn:[{name:"确定",action:function () {
+                            $.ui_dgc("a");
+                            //$("#form").submit();
+                            bg.submit("#form");
+                        }}]
+                    });
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    })
+                }
+            }
+        });
+    }
+
+    function goBindUser(roleId){
+        //window.location.href="/userBindRole/page?roleId="+roleId;
+        //bg.goPage("/userBindRole/page?roleId="+roleId);
+        $("#userBindRoleForm input[name=roleId]").val(roleId);
+        bg.submit("#userBindRoleForm");
+
+    }
+    function goBindBoard(roleId) {
+        //window.location.href="/role/roleBindBoardPage?roleId="+roleId;
+        bg.goPage("/role/roleBindBoardPage?roleId="+roleId)
+    }
+    function goBindOrg(roleId){
+        $("#orgBindRoleFormRoleId").val(roleId);
+        //$("#orgBinRoleForm").submit();
+        bg.submit("#orgBinRoleForm");
+    }
+    function  deleteRoleDialog(roleId) {
+        $.ui_dg({
+            type:"w",
+            con:"确定注销该角色么？",
+            btn:[
+                {name:"确定",action:function () {
+                    deleteRole(roleId)
+                }},
+                {name:"取消",action:function () {
+                   $.ui_dgc();
+                }}
+            ]
+        })
+    }
+    function deleteRole(roleId) {
+        bg.ajax({
+            url:"/role/deleteRole",
+            data:{roleId:roleId},
+            type:"get",
+            success:function (data) {
+                if(data.status==1){
+                    $.ui_dg({
+                        type:"s",
+                        con:data.msg,
+                        btn:[
+                            {name:"确定",action:function () {
+                                $.ui_dgc("a");
+                                //$("#form").submit();
+                                bg.submit("#form");
+                            }}
+                        ]
+                    });
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    });
+                }
+            }
+        });
+    }
+
+</script>

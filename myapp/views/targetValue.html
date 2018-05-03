@@ -1,0 +1,73 @@
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">目标值管理</span>
+    </div>
+    <div class="ui-search">
+        <form id="form" action="targetvalue/page" method="post">
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">看板名称：</span>
+                <div class="ui-search-item-right">
+                    <input class="ui-input-text" name="boardName" value="{{data.form.boardName}}" type="text" placeholder="看板名称" />
+                </div>
+            </div>
+            <div class="ui-search-item">
+                <input class="ui-btn ui-btn-blue" type="button" value="查询" />
+            </div>
+        </form>
+    </div>
+    <div class="ui-table-box">
+        <table class="ui-table">
+            <caption class="ui-table-caption">搜索结果</caption>
+            <thead class="ui-table-thead">
+                <tr class="ui-table-center">
+                    <th class="ui-table-td">看板名名称</th>
+                    <th class="ui-table-td">指标名称</th>
+                    <th class="ui-table-td">模板名称</th>
+                    <th class="ui-table-td">指标描述</th>
+                    <th class="ui-table-td">指标账期</th>
+                    <th class="ui-table-td" style="width: 190px;">管理</th>
+                </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+            {{#p_cod data.list.length '==' 0}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td" colspan="6">暂不数据</td>
+            </tr>
+            {{else}}
+            {{#each data.list}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td">{{boardName}}</td>
+                <td class="ui-table-td">{{idxName}}</td>
+                <td class="ui-table-td">{{teplName}}</td>
+                <td class="ui-table-td">{{idxDesc}}</td>
+                <td class="ui-table-td">{{idxDate}}</td>
+                <td class="ui-table-td">
+                    <input class="ui-btn ui-btn-blue" type="button" value="设置指标值" onclick="goEditValue('{{idxTeplId}}','{{year}}','{{idxDateCode}}')" />
+                    <input class="ui-btn ui-btn-green" type="button" value="查看指标值" onclick="goLookValue('{{idxTeplId}}','{{year}}','{{idxDateCode}}')" />
+                </td>
+            </tr>
+            {{/each}}
+            {{/p_cod}}
+
+            </tbody>
+        </table>
+        <!--<div id="pagination"></div>-->
+    </div>
+</div>
+
+<script type="text/javascript">
+    /*$("#pagination").ui_pn({
+        count:1010, //总数
+        size:10, //每页展示条数
+        pos:"r",//位置
+        page:2,	//当前页
+        clickEvent:function(page){
+
+        }
+    });*/
+    function goEditValue(idxTeplId,year,targetDate) {
+        window.location.href="/targetvalue/idxDimDetail?idxTeplId="+idxTeplId+"&year="+year+"&targetDate="+targetDate;
+    }
+</script>

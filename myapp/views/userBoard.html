@@ -1,0 +1,86 @@
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">用户看板查询</span>
+    </div>
+    <div class="ui-search">
+        <form id="form" action="/userBoard/page" method="post">
+            <input name="currentPage" type="hidden" value="{{data.form.currentPage}}" />
+            <input name="pageSize" type="hidden" value="{{data.form.pageSize}}" />
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">用户名称：</span>
+                <div class="ui-search-item-right">
+                    <input class="ui-input-text" name="userName" value="{{data.form.userName}}" type="text" placeholder="用户名称" />
+                </div>
+            </div>
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">看板名称：</span>
+                <div class="ui-search-item-right">
+                    <input class="ui-input-text" name="boardName" value="{{data.form.boardName}}" type="text" placeholder="看板名称" />
+                </div>
+            </div>
+            <div class="ui-search-item">
+                <span class="ui-search-item-left">排序：</span>
+                <div class="ui-search-item-right">
+                    <select class="ui-select" name="type">
+                        {{#p_cod data.form.type '==' 1}}
+                        <option value="1" selected="selected">用户名称</option>
+                        <option value="2">看板名称</option>
+                        {{else}}
+                        <option value="1">用户名称</option>
+                        <option value="2" selected="selected">看板名称</option>
+                        {{/p_cod}}
+
+                    </select>
+                </div>
+            </div>
+            <div class="ui-search-item">
+                <input class="ui-btn ui-btn-blue" type="button" value="查询" onclick="search(1)" />
+            </div>
+        </form>
+    </div>
+    <div class="ui-table-box">
+        <table class="ui-table">
+            <caption class="ui-table-caption">搜索结果</caption>
+            <thead class="ui-table-thead">
+                <tr class="ui-table-center">
+                    <th class="ui-table-th">用户名称</th>
+                    <th class="ui-table-th">看板名称</th>
+                </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+            {{#p_cod data.list.length '==' 0}}
+            <tr class="ui-table-center">
+                <td class="ui-table-td" colspan="2">暂无用户看板数据</td>
+            </tr>
+            {{else}}
+            {{#each data.list}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td">{{userName}}</td>
+                <td class="ui-table-td">{{boardName}}</td>
+            </tr>
+            {{/each}}
+            {{/p_cod}}
+            </tbody>
+        </table>
+        <div id="pagination" size="{{data.form.pageSize}}" page="{{data.form.currentPage}}" count="{{data.form.count}}"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#pagination").ui_pn({
+        clickEvent:function(page){
+            search(page);
+        }
+    });
+    function search(page) {
+        $("input[name=currentPage]").val(page);
+        //$("#form").submit();
+        bg.submit("#form");
+    }
+    $("#pagination").ui_pn({
+        clickEvent: function (page) {
+            search(page);
+        }
+    });
+</script>

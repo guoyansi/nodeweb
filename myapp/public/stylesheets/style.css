@@ -1,0 +1,85 @@
+.qx-bind-left,
+.qx-bind-right,
+.qx-bind-middle{
+  box-sizing: border-box;
+  position:absolute;
+  top:100px;
+  bottom:0;
+}
+.qx-bind-left,
+.qx-bind-right{
+  width: 45%;
+}
+.qx-bind-left{
+  left:0;
+}
+.qx-bind-right{
+  right: 20px;
+}
+.qx-bind-middle{
+  width: 10%;
+  left:45%;
+}
+.qx-bind-middle-up,
+.qx-bind-middle-down{
+  text-align: center;
+  width: 100%;
+  line-height: 100px;
+}
+.qx-bind-middle-up .qx-bind-btn,
+.qx-bind-middle-down .qx-bind-btn{
+  margin-left: -20px;
+}
+.qx-bind-middle-up{
+  bottom:50%;
+  padding-top:50px;
+}
+.qx-bind-middle-down{
+  top:50%;
+}
+.qx-bind-scroll{
+  top:75px;
+  bottom:0;
+  position: absolute;
+}
+.qx-search-item{
+  width: 50%;
+  text-align: center;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  padding:5px;
+}
+.qx-search-item .qx-search-box{
+  width: 100%;
+}
+.qx-bind-title{
+  border-left: 3px solid gray;
+  height: 30px;
+  line-height: 30px;
+  text-indent: 10px;
+}
+.qx-bind-desc{
+  line-height: 30px;
+  padding-top:10px;
+  padding-bottom:10px;
+  font-size:16px;
+  color: gray;
+  font-weight: bold;
+}
+
+.orgBindRoleLeft,
+.orgBindRoleRight{
+  height:400px;
+  width: 49%;
+  border:1px solid #ccc;
+  overflow-y: auto;
+}
+
+.orgBindRoleLeft{
+  float: left;
+}
+.orgBindRoleRight{
+  float: right;
+}

@@ -1,0 +1,123 @@
+<div class="ui-page">
+    <div class="ui-nav">
+        <span class="ui-nav-history">权限管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-history">角色管理</span>
+        <span class="ui-nav-split">&gt;</span>
+        <span class="ui-nav-current">看板授权</span>
+    </div>
+    <div class="qx-bind-desc">
+        <span class="base-pr20">当前角色：{{data.role.roleName}}</span>
+        <span class="base-pr20">机构层级：{{data.role.orgLevelName}}</span>
+        <span><input class="ui-btn ui-btn-red" type="button" value="返回" onclick="goRolePage()" /></span>
+    </div>
+    <div class="orgBindRoleLeft">
+        <table class="ui-table">
+            <thead class="ui-table-thead">
+            <tr class="ui-table-center">
+                <th class="ui-table-th">待绑看板</th>
+                <th class="ui-table-th" style="width: 50px">操作</th>
+            </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+            {{#p_cod data.noBindList.length '==' 0}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td" colspan="2">暂无待绑看板</td>
+            </tr>
+            {{else}}
+            {{#each data.noBindList}}
+            <tr class="ui-table-tr">
+                <td class="ui-table-td">{{boardName}}</td>
+                <td class="ui-table-td">
+                    <input class="ui-btn ui-btn-red" type="button" value="绑定" onclick="goBind('{{sid}}','{{../data.form.roleId}}')" />
+                </td>
+            </tr>
+            {{/each}}
+            {{/p_cod}}
+            </tbody>
+        </table>
+    </div>
+    <div class="orgBindRoleRight">
+        <table class="ui-table">
+            <thead class="ui-table-thead">
+            <tr class="ui-table-center">
+                <th class="ui-table-th">已绑看板</th>
+                <th class="ui-table-th" style="width: 50px">操作</th>
+            </tr>
+            </thead>
+            <tbody class="ui-table-tbody ui-table-center">
+                {{#p_cod data.bindList.length '==' 0}}
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td" colspan="2">暂无已绑看板</td>
+                </tr>
+                {{else}}
+                {{#each data.bindList}}
+                <tr class="ui-table-tr">
+                    <td class="ui-table-td">{{boardName}}</td>
+                    <td class="ui-table-td">
+                        <input class="ui-btn ui-btn-yellow" type="button" value="解绑" onclick="goNoBind('{{rsId}}')" />
+                    </td>
+                </tr>
+                {{/each}}
+                {{/p_cod}}
+            </tbody>
+        </table>
+    </div>
+</div>
+<form id="form" action="/role/roleBindBoardPage" method="get">
+    <input type="hidden" name="roleId" value="{{data.form.roleId}}"/>
+</form>
+<script type="text/javascript">
+    function goRolePage() {
+        //window.location.href="/role/page";
+        bg.goPage("/role/page");
+    }
+    function goBind(boardId,roleId) {
+        bg.ajax({
+            url:"/role/roleBindBoard",
+            data:{boardId:boardId,roleId:roleId},
+            success:function (data) {
+                if(data.status==1){
+                    $.ui_dg({
+                        type:"s",
+                        con:data.msg,
+                        btn:[
+                            {name:"确定",action:function () {
+                                //$("#form").submit();
+                                bg.submit("#form");
+                            }}
+                        ]
+                    });
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    })
+                }
+            }
+        });
+    }
+    function goNoBind(rsId) {
+        bg.ajax({
+            url:"/role/roleNoBindBoard?rsId="+rsId,
+            success:function (data) {
+                if(data.status==1){
+                    $.ui_dg({
+                        type:"s",
+                        con:data.msg,
+                        btn:[
+                            {name:"确定",action:function () {
+                                //$("#form").submit();
+                                bg.submit("#form");
+                            }}
+                        ]
+                    });
+                }else{
+                    $.ui_dg({
+                        con:data.msg
+                    });
+                }
+            }
+        });
+    }
+
+</script>

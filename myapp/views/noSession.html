@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>session失效</title>
+    <link rel='stylesheet' href='/lazy/face/4/css/base.css' />
+    <link rel='stylesheet' href='/lazy/ui/dialog/dialog.css' />
+</head>
+<body>
+
+</body>
+<script src="/lazy/js/jquery-2.1.4.js"></script>
+<script src="/lazy/ui/dialog/dialog.js"></script>
+<script>
+    $.ui_dg({
+       con:"{{msg}}",
+        btn:[{name:"确定",action:function () {
+            window.location.href="/login/page";
+        }}]
+    });
+</script>
+</html>

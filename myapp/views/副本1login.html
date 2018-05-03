@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>权限管理系统</title>
+		<link rel='stylesheet' href='/lazy/face/4/css/base.css' />
+		<link rel="stylesheet" href="/login/login.css" />
+	</head>
+	<body>
+		<div class="login-box">
+			<div class="login-top"></div>
+			<div class="login-split"></div>
+			<div class="login-form-bj"></div>
+			<form id="form" action="/login/go" method="post">
+				<div class="login-form" style="height: 310px;">
+					<div class="login-form-con">
+						<div class="login-form-title">用户登录</div>
+						<div class="login-inut-box">
+							<input id="userCode" class="login-form-input login-form-account" type="text" name="userCode" value="{{userCode}}" placeholder="请输入用户名" />
+						</div>
+						<div class="login-inut-box">
+							<input id="pass" class="login-form-input login-form-pass" name="password" type="password" value="{{password}}"  placeholder="请输入密码" />
+						</div>
+						<div class="login-inut-box" style="display: none;">
+							<input id="yzm" class="login-form-input login-form-yzm" name="yzm" type="text" value="{{yzm}}" placeholder="请输入验证码" />
+							<img class="login-yzm" onclick="changeYzm($(this))" src="/login/yzm" alt="验证码获取失败" />
+							<div class="login-rember-pass">
+								<input class="login-rember-checkbox" name="" type="checkbox" /> 记住密码</div>
+						</div>
+						<div id="errMsg" style="color: red;width: 330px;margin: 0 auto;padding-bottom: 10px;">
+							{{msg}}
+						</div>
+						<div class="login-inut-box">
+							<input class="login-btn" type="button" value="登录" onclick="login()" />
+						</div>
+					</div>
+				</div>
+			</form>
+			<div class="login-bottom">
+				版权所有：中国邮政速递物流 [京ICP证030621号] 京公网安备[110401400184]
+			</div>
+		</div>
+	</body>
+	<script src="/lazy/js/jquery-2.1.4.js"></script>
+	<script src="/lazy/ui/enter/enter.js"></script>
+<script>
+	function changeYzm(obj) {
+		obj.attr("src","/login/yzm?_="+(new Date()).getTime());
+    }
+    function login() {
+        $("#errMsg").html("");
+        var userCode=$("input[name=userCode]").val();
+        if(!userCode){
+            $("#errMsg").html("账号不能为空");
+            return;
+        }
+        var password=$("input[name=password]").val();
+        if(!password){
+            $("#errMsg").html("密码不能为空");
+            return;
+        }
+        $("#form").submit()
+    }
+    $("#userCode,#pass").ui_enter(function () {
+        login();
+    });
+</script>
+</html>

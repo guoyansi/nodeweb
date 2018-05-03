@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<title>国际订单</title>
+		<link rel="stylesheet" type="text/css" href="dist/flatpickr.min.css">
+		<script type="text/javascript" src="../../js/jquery-2.1.4.min.js"></script>
+		<script src="dist/flatpickr.js"></script>
+	</head>
+
+	<body>
+		<!--<input id="calendar" data-min-date="2017-12-20" data-max-date='2017-12-21'>-->
+		<div  style="background-color: black; width: 50px;height: 50px;">
+			<input id="calendar" data-min-date="2017-12-20" data-max-date='2017-12-21' style="width: 100%; height: 100%;opacity: 0;" />
+		</div>
+	</body>
+<script>
+// 使用jQuery
+$("#calendar").flatpickr({
+	onChange:function(dateObj,dateStr){
+		//console.log(dateStr);
+		alert($("#calendar").val());
+	}
+});
+</script>
+</html>
